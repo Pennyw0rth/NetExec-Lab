@@ -15,6 +15,11 @@ boxes = [
     v.cpus = 2
   end
 
+  # make the vms appear in the GUI of vmware workstation
+  config.vm.provider "vmware_desktop" do |v|
+  v.gui = true
+  end
+
   config.vm.provider "vmware_desktop" do |v|
     v.vmx["memsize"] = "4000"
     v.vmx["numvcpus"] = "2"
