@@ -151,3 +151,16 @@ export LAB="LEHACK"
 cd ansible/
 ansible-playbook -i ../ad/LEHACK/data/inventory -i ../ad/LEACK/providers/vmware/inventory main.yml
 ```
+
+## Special Thanks to
+
+- Aleem Ladha for creating this project and converting the LEHACK-2024 workshop to an ansible playbook  
+- Mayfly277 for the amazing GOAD porject and ansible playbooks
+- MPGN for the lehack workshop and NetExec
+- add more here
+
+## Socials
+
+<a target="_blank" rel="noopener noreferrer" href="https://x.com/intent/follow?screen_name=ladhaaleem" title="Follow">Aleem Ladha</a>
+## Note
+- This repo is based on the work of [Mayfly277](https://github.com/Orange-Cyberdefense/GOAD/)
