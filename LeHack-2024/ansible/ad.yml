@@ -1,0 +1,12 @@
+# create main domains, child domain and enroll servers
+- import_playbook: ad-servers.yml
+# create the trust relationships
+- import_playbook: ad-trusts.yml
+# import the ad datas : users/groups...
+- import_playbook: ad-data.yml
+# set the rights and the group domains relations
+- import_playbook: ad-relations.yml
+# Add adcs
+- import_playbook: adcs.yml
+# set the ACL
+- import_playbook: ad-acl.yml
