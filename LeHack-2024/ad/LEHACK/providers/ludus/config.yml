@@ -1,0 +1,60 @@
+ludus:
+  - vm_name: "{{ range_id }}-dc01"
+    hostname: "{{ range_id }}-dc01"
+    template: win2019-server-x64-template
+    vlan: 10
+    ip_last_octet: 10
+    ram_gb: 4
+    cpus: 2
+    windows:
+      sysprep: true
+    roles:
+      - aleemladha.ludus_wazuh_agent # role_vars are not required when using ludus
+  - vm_name: "{{ range_id }}-srv01"
+    hostname: "{{ range_id }}-srv01"
+    template: win2019-server-x64-template
+    vlan: 10
+    ip_last_octet: 11
+    ram_gb: 4
+    cpus: 2
+    windows:
+      sysprep: true
+    roles:
+      - aleemladha.ludus_wazuh_agent # role_vars are not required when using ludus
+  - vm_name: "{{ range_id }}-srv02"
+    hostname: "{{ range_id }}-srv02"
+    template: win2019-server-x64-template
+    vlan: 10
+    ip_last_octet: 12
+    ram_gb: 4
+    cpus: 2
+    windows:
+      sysprep: true
+    roles:
+      - aleemladha.ludus_wazuh_agent # role_vars are not required when using ludus      
+  - vm_name: "{{ range_id }}-dc02"
+    hostname: "{{ range_id }}-dc02"
+    template: win2019-server-x64-template
+    vlan: 10
+    ip_last_octet: 13
+    ram_gb: 4
+    cpus: 2
+    windows:
+      sysprep: true
+    roles:
+      - aleemladha.ludus_wazuh_agent # role_vars are not required when using ludus
+  - vm_name: "{{ range_id }}-kali"
+    hostname: "{{ range_id }}-kali"
+    template: kali-x64-desktop-template
+    vlan: 10
+    ip_last_octet: 99
+    ram_gb: 4
+    cpus: 4
+    linux: true
+    testing:
+      snapshot: false
+      block_internet: false
+    roles:
+      - aleemladha.wazuh_server_install
+    role_vars:
+      wazuh_admin_password: Wazuh-123
