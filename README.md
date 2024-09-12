@@ -13,6 +13,15 @@ We hope you enjoy this resource and that **it helps the community enhance their 
 
 Have fun !
 
+## Official Discord Channel
+
+If you don't have a Github account, you can ask your questions on Discord!
+
+[![NetExec](https://discordapp.com/api/guilds/1148685154601160794/widget.png?style=banner3)](https://discord.gg/pjwUTQzg8R)
+
+# Documentation, Tutorials, Examples
+See the project's [wiki](https://netexec.wiki/) (in development) for documentation and usage examples
+
 <p align="center">
     <img src="https://github.com/user-attachments/assets/f368f297-3245-46b9-abf9-bcaebbb004ec">
 </p>
