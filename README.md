@@ -162,5 +162,5 @@ ansible-playbook -i ../ad/LEHACK/data/inventory -i ../ad/LEACK/providers/vmware/
 ## Socials
 
 <a target="_blank" rel="noopener noreferrer" href="https://x.com/intent/follow?screen_name=ladhaaleem" title="Follow">Aleem Ladha</a>
-## Note
+## Note 
 - This repo is based on the work of [Mayfly277](https://github.com/Orange-Cyberdefense/GOAD/)
