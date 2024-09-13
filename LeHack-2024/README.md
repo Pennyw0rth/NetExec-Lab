@@ -40,13 +40,7 @@ Submit a PR to add your writeup to this list :)
 
 ## Special Thanks to
 
-- Aleem Ladha for creating this project and converting the LEHACK-2024 workshop to an ansible playbook  
-- Mayfly277 for the amazing GOAD porject and ansible playbooks
-- MPGN for the lehack workshop and NetExec
-- add more here
+- Aleem Ladha [https://x.com/LadhaAleem](@LadhaAleem) for creating this project and converting the LEHACK-2024 workshop to an ansible playbook  
+- M4yFly [https://x.com/M4yFly](@M4yFly) for the amazing GOAD porject and ansible playbooks (This repo is based on the work of [Mayfly277](https://github.com/Orange-Cyberdefense/GOAD/))
+- mpgn [https://x.com/mpgn_x64](@mpgn_x64) for the lehack workshop and NetExec
 
-## Socials
-
-<a target="_blank" rel="noopener noreferrer" href="https://x.com/intent/follow?screen_name=ladhaaleem" title="Follow">Aleem Ladha</a>
-## Note 
-- This repo is based on the work of [Mayfly277](https://github.com/Orange-Cyberdefense/GOAD/)
