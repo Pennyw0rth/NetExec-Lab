@@ -1,25 +1,24 @@
 Vagrant.configure("2") do |config|
 
-ENV['VAGRANT_DEFAULT_PROVIDER'] = 'vmware_desktop'
+# Uncomment this depending on the provider you want to use
+ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
 
 boxes = [
   { :name => "LEHACK-DC01",  :ip => "192.168.56.10", :box => "mayfly/windows_server2019", :os => "windows"},
   { :name => "LEHACK-SRV01",  :ip => "192.168.56.11", :box => "mayfly/windows_server2019", :os => "windows"},
   { :name => "LEHACK-SRV02",  :ip => "192.168.56.12", :box => "mayfly/windows_server2019", :os => "windows"},
-  { :name => "LEHACK-DC02", :ip => "192.168.56.13", :box => "mayfly/windows_server2019", :os => "windows"},
-  { :name => "LEHACK-KALI", :ip => "192.168.56.23", :box => "kalilinux/rolling", :os => "linux", :forwarded_port => [ {:guest => 22, :host => 2210, :id => "ssh"} ]}
+  { :name => "LEHACK-DC02", :ip => "192.168.56.13", :box => "mayfly/windows_server2019", :os => "windows"}
+  #{ :name => "LEHACK-KALI", :ip => "192.168.56.23", :box => "kalilinux/rolling", :os => "linux", :forwarded_port => [ {:guest => 22, :host => 2210, :id => "ssh"} ]}
 ]
 
   config.vm.provider "virtualbox" do |v|
-    v.memory = 4000
+    v.memory = 2000
     v.cpus = 2
   end
 
   config.vm.provider "vmware_desktop" do |v|
-    v.vmx["memsize"] = "4000"
+    v.vmx["memsize"] = "2000"
     v.vmx["numvcpus"] = "2"
-    v.force_vmware_license = "workstation"  # force the licence for fix some vagrant plugin issue
-    v.gui = true
   end
 
   # disable rdp forwarded port inherited from StefanScherer box
@@ -37,7 +36,7 @@ boxes = [
 
   boxes.each do |box|
     config.vm.define box[:name] do |target|
-      # BOX
+      # BOX
       target.vm.provider "virtualbox" do |v|
         v.name = box[:name]
         v.customize ["modifyvm", :id, "--groups", "/LEHACK"]
