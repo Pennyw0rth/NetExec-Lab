@@ -20,8 +20,8 @@ The Gallic camp was attacked by the Romans and it seems that a traitor made this
 
 ### Public Writeups
 
-- https://www.rayanle.cat/lehack-2024-netexec-workshop-writeup/ by [https://x.com/rayanlecat](@rayanlecat)
-- https://blog.lasne.pro/posts/netexec-workshop-lehack2024/ by [https://x.com/0xFalafel](@0xFalafel)
+- https://www.rayanle.cat/lehack-2024-netexec-workshop-writeup/ by [@rayanlecat](https://x.com/rayanlecat)
+- https://blog.lasne.pro/posts/netexec-workshop-lehack2024/ by [@0xFalafel](https://x.com/0xFalafel)
 
 Submit a PR to add your writeup to this list :)
 
@@ -41,7 +41,7 @@ Submit a PR to add your writeup to this list :)
 
 ## Special Thanks to
 
-- Aleem Ladha [https://x.com/LadhaAleem](@LadhaAleem) for creating this project and converting the LEHACK-2024 workshop to an ansible playbook  
-- M4yFly [https://x.com/M4yFly](@M4yFly) for the amazing GOAD porject and ansible playbooks (This repo is based on the work of [Mayfly277](https://github.com/Orange-Cyberdefense/GOAD/))
-- mpgn [https://x.com/mpgn_x64](@mpgn_x64) for the LeHack workshop
+- Aleem Ladha [@LadhaAleem](https://x.com/LadhaAleem) for creating this project and converting the LEHACK-2024 workshop to an ansible playbook  
+- M4yFly [@M4yFly](https://x.com/M4yFly) for the amazing GOAD porject and ansible playbooks (This repo is based on the work of [Mayfly277](https://github.com/Orange-Cyberdefense/GOAD/))
+- mpgn [@mpgn_x64](https://x.com/mpgn_x64) for the LeHack workshop
 - NetExec's dev team for this awesome tool !
