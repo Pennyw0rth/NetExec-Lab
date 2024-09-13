@@ -10,8 +10,9 @@ Originally featured in the LeHack2024 Workshop, this lab is now available for fr
 
 The ultimate goal? Become Domain Administrator by following various attack paths, using nothing but NetExec! and Maybe BloodHound (Why not :P)
 
-> Obviously do not cheat by looking at the passwords and flags in the recipe files, the lab must start without user to full compromise
+Obviously do not cheat by looking at the passwords and flags in the recipe files, the lab must start without user to full compromise
 
+**Note**: On change has been made on this lab regarding the workshop, the part using msol module on nxc is replaced with a dump of lsass. The rest is identical.
 
 ### Original pitch
 
