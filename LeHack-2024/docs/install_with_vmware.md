@@ -112,8 +112,7 @@ ansible-galaxy install -r ansible/requirements.yml
 
 ```bash
 cd ad/LEHACK/providers/vmware
-vagrant up
-```
+vagrant 
 
 *note: For some distributions, you may need to run additional commands to install WinRM gems* this can be done via the following commands:
 
@@ -139,7 +138,7 @@ export LAB="LEHACK"
 
 ```bash
 cd ansible/
-ansible-playbook -i ../ad/LEHACK/data/inventory -i ../ad/LEACK/providers/vmware/inventory main.yml
+ansible-playbook -i ../ad/LEHACK/data/inventory -i ../ad/LEHACK/providers/vmware/inventory main.yml
 ```
 ### Once install has finished disable vagrant user to avoid using it
 
