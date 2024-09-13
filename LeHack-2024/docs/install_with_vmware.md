@@ -150,9 +150,8 @@ ansible-playbook -i ../ad/LEHACK/providers/vmware/inventory_disablevagrant disab
 ### Now do a reboot of all the machines to avoid unintended secrets stored / am looking at you Lsassy
 
 ```bash
-cd ad/LEHACK/providers/vmware"
-vagrant reload
-
+cd ansible/
+ansible-playbook -i ../ad/LEHACK/providers/vmware/inventory_disablevagrant reboot.yml
 ```
 
 ### Add the domain and ip to your host file
