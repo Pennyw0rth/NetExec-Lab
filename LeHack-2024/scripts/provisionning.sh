@@ -1,95 +1,105 @@
 #!/bin/bash
 
-ERROR=$(tput setaf 1; echo -n "[!]"; tput sgr0)
-OK=$(tput setaf 2; echo -n "[✓]"; tput sgr0)
-INFO=$(tput setaf 3; echo -n "[-]"; tput sgr0)
+ROMAN_ATTACK=$(tput setaf 1; echo -n "[!] The Romans are attacking!"; tput sgr0)
+VICTORY=$(tput setaf 2; echo -n "[✓] Victory is ours!"; tput sgr0)
+ALERT=$(tput setaf 3; echo -n "[-] Gallic Scouts report unusual activity..."; tput sgr0)
 
-RESTART_COUNT=0
-MAX_RETRY=3
+# Battle counter and maximum defenses (retries)
+BATTLE_COUNT=0
+MAX_DEFENSES=3
 
+# Declare the current state of the battlefield
+echo "[+] Current battlefield: $(pwd)"
+echo "[+] Preparing to build the Gallic camp of: $LAB"
+echo "[+] Provider of reinforcements: $PROVIDER"
 
-echo "[+] Current folder $(pwd)"
-echo "[+] Current LAB : $LAB"
-echo "[+] Current PROVIDER : $PROVIDER"
+# Setting the Ansible command for deploying the camp
 if [ -z  "$ANSIBLE_COMMAND" ]; then
   export ANSIBLE_COMMAND="ansible-playbook -i ../ad/$LAB/data/inventory -i ../ad/$LAB/providers/$PROVIDER/inventory"
 fi
-echo "[+] Ansible command : $ANSIBLE_COMMAND"
+echo "[+] Gallic warriors are ready with the command: $ANSIBLE_COMMAND"
 
-function run_ansible {
-    # Check if the maximum number of retries is reached, then exit with an error code
-    if [ $RESTART_COUNT -eq $MAX_RETRY ]; then
-        echo "$ERROR $MAX_RETRY restarts occurred, exiting..."
+# Function to handle each battle (playbook execution)
+function defend_gallic_camp {
+    if [ $BATTLE_COUNT -eq $MAX_DEFENSES ]; then
+        echo "$ROMAN_ATTACK Our defenses have fallen after $MAX_DEFENSES attempts! The Romans overrun the camp!"
         exit 2
     fi
 
-    echo "[+] Restart counter: $RESTART_COUNT"
-    let "RESTART_COUNT += 1"
+    echo "[+] Defense round: $BATTLE_COUNT"
+    let "BATTLE_COUNT += 1"
 
-    # Run the command with a timeout of 30 minutes to avoid failure when ansible is stuck
+    # Begin the battle with a 30-minute timeout unless it's a special mission (SCCM)
     if [[ $LAB == "SCCM" ]]; then
-        echo "$OK Running command without timeout: $ANSIBLE_COMMAND $1"
-        # SCCM no timeout
+        echo "$VICTORY Deploying without time restrictions: $ANSIBLE_COMMAND $1"
         $ANSIBLE_COMMAND $1
     else
-        echo "$OK Running command with timeout 30min: $ANSIBLE_COMMAND $1"
+        echo "$VICTORY Holding the line with a 30-minute timeout: $ANSIBLE_COMMAND $1"
         timeout 30m $ANSIBLE_COMMAND $1
     fi
 
-    exit_code=$(echo $?)
+    # Analyze the results of the battle
+    battle_result=$(echo $?)
 
-    if [ $exit_code -eq 4 ]; then # ansible result code 4 = RUN_UNREACHABLE_HOSTS
-        echo "$ERROR Error while running: $ANSIBLE_COMMAND $1"
-        echo "$ERROR Some hosts were unreachable, we are going to retry"
-        run_ansible $1
+    if [ $battle_result -eq 4 ]; then
+        echo "$ROMAN_ATTACK The traitor has disrupted communications! Retrying the battle: $ANSIBLE_COMMAND $1"
+        defend_gallic_camp $1
 
-    elif [ $exit_code -eq 124 ]; then # Command has timed out, relaunch the ansible playbook
-        echo "$ERROR Error while running: $ANSIBLE_COMMAND $1"
-        echo "$ERROR Command has reached the timeout limit of 30 minutes, we are going to retry"
-        run_ansible $1
+    elif [ $battle_result -eq 124 ]; then
+        echo "$ROMAN_ATTACK Time has run out, but we regroup for another attack: $ANSIBLE_COMMAND $1"
+        defend_gallic_camp $1
 
-    elif [ $exit_code -eq 0 ]; then # ansible result code 0 = RUN_OK
-        echo "$OK Command successfully executed"
-        RESTART_COUNT=0 # Reset the counter for the next playbook
+    elif [ $battle_result -eq 0 ]; then
+        echo "$VICTORY We have successfully defended the camp!"
+        BATTLE_COUNT=0 # Reset defenses for the next battle
         return 0
 
     else
-        echo "$ERROR Fatal error from ansible with exit code: $exit_code"
-        echo "$ERROR We are going to retry"
-        run_ansible $1
+        echo "$ROMAN_ATTACK A serious error occurred! Preparing another counterattack (error code: $battle_result)"
+        defend_gallic_camp $1
     fi
 }
 
-# We run all the recipes separately to minimize faillure
-echo "[+] Running all the playbook to setup the lab"
+# Begin the process of building the lab (aka camp) by running all the necessary playbooks (battles)
+echo "[+] The Romans are gathering their forces, and the camp must be built to withstand the siege!"
 SECONDS=0
 
 case $LAB in
     "LEHACK")
-        echo "[+] Entering LEHACK build"
-        run_ansible build.yml
-        run_ansible ad-servers.yml
-        run_ansible ad-parent_domain.yml
-        #run_ansible ad-child_domain.yml
-        run_ansible ad-members.yml
-        #run_ansible ad-trusts.yml
-        run_ansible ad-data.yml
-        run_ansible ad-gmsa.yml
-        run_ansible local-users.yml
-        run_ansible laps.yml
-        #run_ansible ad-relations.yml
-        run_ansible adcs.yml
-        run_ansible ad-acl.yml
-        #run_ansible servers.yml
-        run_ansible security.yml
-        run_ansible vulnerabilities.yml
-        run_ansible cred-acl.yml
+        echo "[+] Entering LEHACK territory - building the defenses of the Gallic camp!"
+        defend_gallic_camp build.yml
+        defend_gallic_camp ad-servers.yml
+        defend_gallic_camp ad-parent_domain.yml
+        #defend_gallic_camp ad-child_domain.yml
+        defend_gallic_camp ad-members.yml
+        #defend_gallic_camp ad-trusts.yml
+        defend_gallic_camp ad-data.yml
+        defend_gallic_camp ad-gmsa.yml
+        defend_gallic_camp local-users.yml
+        defend_gallic_camp laps.yml
+        #defend_gallic_camp ad-relations.yml
+        defend_gallic_camp adcs.yml
+        defend_gallic_camp ad-acl.yml
+        #defend_gallic_camp servers.yml
+        defend_gallic_camp security.yml
+        defend_gallic_camp vulnerabilities.yml
+        defend_gallic_camp cred-acl.yml
+        ;;
+    *)
+        echo "$ROMAN_ATTACK Unknown territory: $LAB. Unable to deploy defenses!"
+        exit 1
         ;;
 esac
 
-# end build
-echo "[+] Almost finish, last reboot and it is finish !"
-run_ansible reboot.yml
-echo "$OK your lab : $LAB is successfully setup ! have fun ;)"
+# Final task - reboot the camp to ensure safety
+echo "[+] The Romans are retreating! Prepare for the final reboot to secure the camp!"
+defend_gallic_camp reboot.yml
+echo "$VICTORY The Gallic camp is fully defended! The traitor is hiding, and the camp is ready for you to find them!"
 duration=$SECONDS
-echo "Build in $((duration / 60)) minutes and $((duration % 60)) seconds."
+echo "The camp was built in $((duration / 60)) minutes and $((duration % 60)) seconds."
+
+# Final message - call to action for the participants
+echo ""
+echo "🔥🔥🔥 The battle is ready! The traitor is hiding somewhere in the camp, and it's your mission to find them! 🔥🔥🔥"
+echo "May the gods of Gaul guide you as you embark on this dangerous quest!"
+echo ""
