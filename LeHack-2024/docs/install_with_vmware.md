@@ -145,7 +145,7 @@ ansible-playbook -i ../ad/LEHACK/data/inventory -i ../ad/LEACK/providers/vmware/
 
 ```bash
 cd ansible/
-ansible-playbook -i ../ad/LEACK/providers/vmware/inventory_disablevagrant disable_vagrant.yml
+ansible-playbook -i ../ad/LEHACK/providers/vmware/inventory_disablevagrant disable_vagrant.yml
 ```
 
 ### Now do a reboot of all the machines to avoid unintended secrets stored / am looking at you Lsassy
