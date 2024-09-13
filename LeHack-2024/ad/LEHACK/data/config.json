@@ -11,7 +11,7 @@
                     "Administrators": []
                 },
                 "scripts": ["dcsync_msol.ps1"],
-                "vulns": ["disable_firewall", "directory", "openshares", "files", "shares",],
+                "vulns": ["disable_firewall", "directory", "openshares", "files", "shares"],
                 "vulns_vars": {
                     "directory": {
                         "shares": "C:\\shares",
