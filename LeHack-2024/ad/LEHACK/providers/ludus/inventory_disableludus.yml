@@ -4,13 +4,13 @@
 ; ------------------------------------------------
 ; rome.local
 ; ------------------------------------------------
-dc01 ansible_host=10.3.10.10 dns_domain=dc01 dict_key=dc01 ansible_user=administrator ansible_password=TjhgkbVXSx9rk
-srv01 ansible_host=10.3.10.11 dns_domain=dc01 dict_key=srv01 ansible_user=localix ansible_password=wUSYIuhhWy!!12OL
-srv02 ansible_host=10.3.10.12 dns_domain=dc01 dict_key=srv02 ansible_user=localix ansible_password=wUSYIuHHWy!!12OLZ
+dc01 ansible_host=10.RANGENUMBER.10.10 dns_domain=dc01 dict_key=dc01 ansible_user=administrator ansible_password=TjhgkbVXSx9rk
+srv01 ansible_host=10.RANGENUMBER.10.11 dns_domain=dc01 dict_key=srv01 ansible_user=localix ansible_password=wUSYIuhhWy!!12OL
+srv02 ansible_host=10.RANGENUMBER.10.12 dns_domain=dc01 dict_key=srv02 ansible_user=localix ansible_password=wUSYIuHHWy!!12OLZ
 ; ------------------------------------------------
 ; armorique.local
 ; ------------------------------------------------
-dc02 ansible_host=10.3.10.13 dns_domain=dc02 dict_key=dc02 ansible_user=administrator ansible_password=UIYHJKI75cKV+Pu
+dc02 ansible_host=10.RANGENUMBER.10.13 dns_domain=dc02 dict_key=dc02 ansible_user=administrator ansible_password=UIYHJKI75cKV+Pu
 ; ------------------------------------------------
 
 
@@ -19,7 +19,7 @@ dc02 ansible_host=10.3.10.13 dns_domain=dc02 dict_key=dc02 ansible_user=administ
 domain_name=LEHACK
 
 force_dns_server=yes
-dns_server=10.3.10.254
+dns_server=10.RANGENUMBER.10.254
 
 two_adapters=no
 ; adapter created by vagrant and virtualbox (comment if you use vmware)
