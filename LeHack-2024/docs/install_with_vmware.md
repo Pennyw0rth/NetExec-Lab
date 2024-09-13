@@ -8,6 +8,27 @@
 
 ## Prerequisites
 
+- Providing
+  - [Vmware workstation](https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html)
+  - [Vagrant](https://developer.hashicorp.com/vagrant/docs)
+  - [Vmware utility driver](https://developer.hashicorp.com/vagrant/downloads/vmware)
+  - Vagrant plugins:
+    - vagrant-reload
+    - vagrant-vmware-desktop
+    - on some distribution also the vagrant plugins :
+      - winrm
+      - winrm-fs
+      - winrm-elevated
+
+- Provisioning with python
+  - Python3 (>=3.8)
+  - [ansible-core==2.12.6](https://docs.ansible.com/ansible/latest/index.html)
+  - pywinrm
+
+- Or provisioning With Docker
+  - [Docker](https://www.docker.com/)
+
+
 ### Install Vmware workstation
 
 - Download and install vmware workstation and set your license key (or use the 30 days trial) [workstation-pro-evaluation](https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html)
