@@ -77,7 +77,7 @@ gem install winrm winrm-fs winrm-elevated
 
 ```bash
 sudo apt install git
-git clone https://github.com/Pennyw0rth/NetExec-Lab.git
+git clone https://github.com/Pennyw0rth/NetExec-Lab
 cd LeHack-2024/ansible
 sudo apt install python3.8-venv
 python3.8 -m virtualenv .venv
