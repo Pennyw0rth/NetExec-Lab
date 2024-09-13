@@ -141,6 +141,20 @@ export LAB="LEHACK"
 cd ansible/
 ansible-playbook -i ../ad/LEHACK/data/inventory -i ../ad/LEACK/providers/vmware/inventory main.yml
 ```
+### Once install has finished disable vagrant user to avoid using it
+
+```bash
+cd ansible/
+ansible-playbook -i ../ad/LEACK/providers/vmware/inventory_disablevagrant disable_vagrant.yml
+```
+
+### Now do a reboot of all the machines to avoid unintended secrets stored / am looking at you Lsassy
+
+```bash
+cd ad/LEHACK/providers/vmware"
+vagrant reload
+
+```
 
 ### Add the domain and ip to your host file
 
