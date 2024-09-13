@@ -11,7 +11,7 @@ boxes = [
 ]
 
   config.vm.provider "virtualbox" do |v|
-    v.memory = 4000
+    v.memory = 2000
     v.cpus = 2
   end
 
@@ -21,7 +21,7 @@ boxes = [
   end
 
   config.vm.provider "vmware_desktop" do |v|
-    v.vmx["memsize"] = "4000"
+    v.vmx["memsize"] = "2000"
     v.vmx["numvcpus"] = "2"
     v.force_vmware_license = "workstation"  # force the licence for fix some vagrant plugin issue
     v.gui = true
