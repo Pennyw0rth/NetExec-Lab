@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<filezilla xmlns:fz="https://filezilla-project.org" xmlns="https://filezilla-project.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" fz:product_flavour="standard" fz:product_version="1.8.2">
+	<default_impersonator index="0" enabled="false">
+		<name></name>
+		<password></password>
+	</default_impersonator>
+	<user name="&lt;system user>" enabled="false">
+		<mount_point tvfs_path="/winex" access="1" native_path="" new_native_path="%&lt;home>" recursive="2" flags="1" />
+		<rate_limits inbound="unlimited" outbound="unlimited" session_inbound="unlimited" session_outbound="unlimited" />
+		<allowed_ips></allowed_ips>
+		<disallowed_ips></disallowed_ips>
+		<session_open_limits files="unlimited" directories="unlimited" />
+		<session_count_limit>unlimited</session_count_limit>
+		<description>This user can impersonate any system user.</description>
+		<impersonation login_only="false" />
+		<methods>1</methods>
+	</user>
+	<user name="heftepix" enabled="true">
+		<mount_point tvfs_path="/" access="1" native_path="" new_native_path="c:\wineremix" recursive="2" flags="1" />
+		<rate_limits inbound="unlimited" outbound="unlimited" session_inbound="unlimited" session_outbound="unlimited" />
+		<allowed_ips></allowed_ips>
+		<disallowed_ips></disallowed_ips>
+		<session_open_limits files="unlimited" directories="unlimited" />
+		<session_count_limit>unlimited</session_count_limit>
+		<description></description>
+		<password index="1">
+			<hash>G0tzRnvYWc5CNWh1EZTRzneArTz7/q9ZwdAkXrgj4bc</hash>
+			<salt>Rx6CcqS4Cpy1Y++SNaLRe5Ja+E0+D+OM4kcagrwSpnU</salt>
+			<iterations>100000</iterations>
+		</password>
+		<methods>1</methods>
+	</user>
+</filezilla>

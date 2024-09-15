@@ -1,28 +1,10 @@
-# LEHACK FREE Workshop 2024 (Active Directory pwnage with NetExec)
+# Vmware setup (aka "Virtualbox c'est no way")
 
-<div>
-<img src="./lehack-2024.png"/>
+<div align="center">
+  <img alt="vagrant" width="150" height="150" src="./img/icon_vagrant.png">
+  <img alt="icon_vwmare" width="150"  height="150" src="./img/icon_vwmare.png">
+  <img alt="icon_ansible" width="150"  height="150" src="./img/icon_ansible.png">
 </div>
-
-Welcome to the NetExec Active Directory Lab! This lab is designed to teach you how to exploit Active Directory (AD) environments using the powerful tool NetExec.
-
-Originally featured in the LeHack2024 Workshop, this lab is now available for free to everyone! In this lab, you’ll explore how to use the powerful tool NetExec to efficiently compromise an Active Directory domain during an internal pentest.
-
-The ultimate goal? Become Domain Administrator by following various attack paths, using nothing but NetExec! and Maybe BloodHound (Why not :P)
-
-> Obviously do not cheat by looking at the passwords and flags in the recipe files, the lab must start without user to full compromise
-
-
-### Original pitch
-
-The Gallic camp was attacked by the Romans and it seems that a traitor made this attack possible! Two domains must be compromised to find it 🔥
-
-### Public Writeups
-
-- https://www.rayanle.cat/lehack-2024-netexec-workshop-writeup/ by [https://x.com/rayanlecat](@rayanlecat)
-- https://blog.lasne.pro/posts/netexec-workshop-lehack2024/ by [https://x.com/0xFalafel](@0xFalafel)
-
-Submit a PR to add your writeup to this list :)
 
 ## Prerequisites
 
@@ -46,10 +28,6 @@ Submit a PR to add your writeup to this list :)
 - Or provisioning With Docker
   - [Docker](https://www.docker.com/)
 
-
-## Install dependencies
-
-> No automatic install is provided as it depend of your package manager and distribution. Here are some install command lines are given for ubuntu.
 
 ### Install Vmware workstation
 
@@ -99,8 +77,8 @@ gem install winrm winrm-fs winrm-elevated
 
 ```bash
 sudo apt install git
-git https://github.com/Pennyw0rth/NetExec-Lab.git
-cd LEHACK/ansible
+git clone https://github.com/Pennyw0rth/NetExec-Lab
+cd LeHack-2024/ansible
 sudo apt install python3.8-venv
 python3.8 -m virtualenv .venv
 source .venv/bin/activate
@@ -134,8 +112,7 @@ ansible-galaxy install -r ansible/requirements.yml
 
 ```bash
 cd ad/LEHACK/providers/vmware
-vagrant up
-```
+vagrant 
 
 *note: For some distributions, you may need to run additional commands to install WinRM gems* this can be done via the following commands:
 
@@ -161,7 +138,20 @@ export LAB="LEHACK"
 
 ```bash
 cd ansible/
-ansible-playbook -i ../ad/LEHACK/data/inventory -i ../ad/LEACK/providers/vmware/inventory main.yml
+ansible-playbook -i ../ad/LEHACK/data/inventory -i ../ad/LEHACK/providers/vmware/inventory main.yml
+```
+### Once install has finished disable vagrant user to avoid using it
+
+```bash
+cd ansible/
+ansible-playbook -i ../ad/LEHACK/providers/vmware/inventory_disablevagrant disable_vagrant.yml
+```
+
+### Now do a reboot of all the machines to avoid unintended secrets stored / am looking at you Lsassy
+
+```bash
+cd ansible/
+ansible-playbook -i ../ad/LEHACK/providers/vmware/inventory_disablevagrant reboot.yml
 ```
 
 ### Add the domain and ip to your host file

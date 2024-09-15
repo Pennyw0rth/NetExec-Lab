@@ -1,0 +1,515 @@
+{
+    "lab": {
+        "hosts": {
+            "dc01": {
+                "hostname": "babaorum",
+                "type": "dc",
+                "local_admin_password": "TjhgkbVXSx9rk",
+                "domain": "rome.local",
+                "path": "DC=rome,DC=local",
+                "local_groups": {
+                    "Administrators": []
+                },
+                "scripts": ["dcsync_msol.ps1"],
+                "vulns": ["disable_firewall", "directory", "openshares", "files", "shares"],
+                "vulns_vars": {
+                    "directory": {
+                        "shares": "C:\\shares",
+                        "SHAREACCESIX": "C:\\shares\\SHAREACCESIX"
+                    },
+                    "files": {
+                        "letter_in_shares": {
+                            "src": "dc01/infos.txt.txt",
+                            "dest": "C:\\shares\\SHAREACCESIX\\infos.txt.txt"
+                        }
+                    },				
+                }
+            },
+            "dc02": {
+                "hostname": "village",
+                "type": "dc",
+                "local_admin_password": "UIYHJKI75cKV+Pu",
+                "domain": "armorique.local",
+                "path": "DC=armorique,DC=local",
+                "local_groups": {
+                    "Administrators": []
+                },
+                "scripts": ["gmsa.ps1", "constrained_delegation_use_any.ps1", "dcsync_gmsa.ps1"],
+                "vulns": ["disable_firewall"]
+            },
+            "srv01": {
+                "hostname": "METRONUM",
+                "type": "server",
+                "local_admin_password": "FGHJ-%^&76576",
+                "domain": "rome.local",
+                "path": "OU=LAPS,DC=rome,DC=local",
+                "use_laps": true,
+                "local_groups": {
+                    "Administrators": [ "rome\\musculus" ],
+                    "Remote Desktop Users": []
+                },
+                "scripts": ["filezilla.ps1"],
+                "vulns": ["disable_firewall", "files", "credentials", "autologon"],
+                "vulns_vars": {
+                    "files": {
+                        "filezillaexe": {
+                            "src": "srv01/filezilla.exe",
+                            "dest": "C:\\filezilla.exe"
+                        },
+                        "filezillconfig": {
+                            "src": "srv01/users.xml",
+                            "dest": "C:\\users.xml"
+                        }
+                    },
+		            "autologon" : {
+						"musculus" : {
+							"username" : "rome\\musculus",
+							"password" : "P3x!Vw6^Yk"
+						}
+					},			
+				    "credentials" : {
+						"TERMSRV/musculus": {
+							"username" : "lapsus",
+							"secret"   : "hC78*K,Zv+z123",
+							"runas"    : "rome\\musculus",
+							"runas_password" : "P3x!Vw6^Yk"
+						}
+					},					
+                }
+            },
+            "srv02": {
+                "hostname": "REFERENDUM",
+                "type": "server",
+                "local_admin_password": "JKHG&*&&HJLLIgjhk",
+                "domain": "rome.local",
+                "path": "OU=LAPS,DC=rome,DC=local",
+                "use_laps": true,
+                "local_groups": {
+                    "Administrators": [],
+                    "Remote Desktop Users": []
+                },
+                "scripts": [],
+                "vulns": ["disable_firewall", "credentials", "autologon"],
+                "vulns_vars": {
+				    "credentials" : {
+						"TERMSRV/AzureAD": {
+							"username" : "MSOL_80541c18ebaa",
+							"secret"   : "]x+qdDl^U!u2I=_wW&1EdJ:*sA(APh_R-v?:#335PPD!Lf[_4ui[h)y>sXB{&[$|F+dHnUD2-]4#4ZNgX%dg?1F.B}h.Q)Kb#8(k^oZ_5:O3Aya}a*.2Bc_L;^q!{B%",
+							"runas"    : "rome\\jules.cesar",
+							"runas_password" : "X3v@Lp7*Yq"
+						}
+					},
+		            "autologon" : {
+						"jules.cesar" : {
+							"username" : "rome\\jules.cesar",
+							"password" : "X3v@Lp7*Yq"
+						}
+					},						
+                }
+            }
+        },
+    "domains" : {
+        "rome.local" : {
+            "dc": "dc01",
+            "domain_password" : "TjhgkbVXSx9rk",
+            "netbios_name": "ROME",
+			"groups" : {
+                },
+            "laps_path": "OU=Laps,DC=rome,DC=local",
+                        "organisation_units" : {
+                            "LAPS" : { "path" : "DC=rome,DC=local"}
+										},
+										
+                        "laps_readers": ["lapsus"],
+						"users" : {
+                                "MSOL_80541c18ebaa": {
+                                        "firstname": "MSOL_80541c18ebaa", "": "",
+                                        "password": "]x+qdDl^U!u2I=_wW&1EdJ:*sA(APh_R-v?:#335PPD!Lf[_4ui[h)y>sXB{&[$|F+dHnUD2-]4#4ZNgX%dg?1F.B}h.Q)Kb#8(k^oZ_5:O3Aya}a*.2Bc_L;^q!{B%",
+                                        "description": "Not Azure DcSync",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                                                },							
+                                "lapsus": {
+                                        "firstname": "lapsus", "": "",
+                                        "password": "hC78*K,Zv+z123",
+                                        "description": "lapsus",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                                                },
+								"jules.cesar": {
+                                        "firstname": "Jules", "Cesar": "",
+                                        "password": "X3v@Lp7*Yq",
+                                        "description": "Jules Cesar",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                                                },
+                                "brutus": {
+                                        "firstname": "Brutus", "": "",
+                                        "password": "Z9p#Xr4^Ty",
+                                        "description": "Brutus",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "caius.bonus": {
+                                        "firstname": "Caius", "Bonus": "",
+                                        "password": "W5r&Jk2@Xv",
+                                        "description": "Caius Bonus",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "caius.laius": {
+                                        "firstname": "Caius", "Laius": "",
+                                        "password": "T7x!Pv8^Qr",
+                                        "description": "Caius Laius",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "caius.pupus": {
+                                        "firstname": "Caius", "Pupus": "",
+                                        "password": "M6v#Zy9*Lq",
+                                        "description": "Caius Pupus",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "motus": {
+                                        "firstname": "Motus", "": "",
+                                        "password": "E2t^Vw5@Ln",
+                                        "description": "Motus",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "couverdepus": {
+                                        "firstname": "Couverdepus", "": "",
+                                        "password": "H4x&Qp6!Rv",
+                                        "description": "Couverdepus",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "processus": {
+                                        "firstname": "Processus", "": "",
+                                        "password": "F8y@Xo1#Tk",
+                                        "description": "Processus",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "cartapus": {
+                                        "firstname": "Cartapus", "": "",
+                                        "password": "K7r!Wp2^Ln",
+                                        "description": "Cartapus",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "oursenplus": {
+                                        "firstname": "Oursenplus", "": "",
+                                        "password": "S9v#Jy3*Qx",
+                                        "description": "Oursenplus",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "detritus": {
+                                        "firstname": "Detritus", "": "",
+                                        "password": "Y5t@Lk4!Wp",
+                                        "description": "Detritus",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "blocus": {
+                                        "firstname": "Blocus", "": "",
+                                        "password": "J2p^Tr8&Lq",
+                                        "description": "Blocus",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "musculus": {
+                                        "firstname": "Musculus", "": "",
+                                        "password": "P3x!Vw6^Yk",
+                                        "description": "Musculus",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "radius": {
+                                        "firstname": "Radius", "": "",
+                                        "password": "A7y@Qp1#Xv",
+                                        "description": "Radius",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "briseradius": {
+                                        "firstname": "Briseradius", "": "",
+                                        "password": "G9r^Jk5*Tp",
+                                        "description": "Briseradius",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "plexus": {
+                                        "firstname": "Plexus", "": "",
+                                        "password": "D4t!Xo3@Wq",
+                                        "description": "Plexus",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "marcus.sacapus": {
+                                        "firstname": "Marcus", "Sacapus": "",
+                                        "password": "Z6p#Vy8^Xk",
+                                        "description": "Marcus Sacapus",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "yenapus": {
+                                        "firstname": "Yenapus", "": "",
+                                        "password": "C1x!Wq4@Lr",
+                                        "description": "Yenapus",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "chorus": {
+                                        "firstname": "Chorus", "": "",
+                                        "password": "N5v^Pk9#Tr",
+                                        "description": "Chorus",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "cleopatre": {
+                                        "firstname": "Cleopatre", "": "",
+                                        "password": "B7r&Jk2*Xp",
+                                        "description": "Cleopatre",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "epidemais": {
+                                        "firstname": "Epidemais", "": "",
+                                        "password": "R3y!Vw6@Tp",
+                                        "description": "Epidemais",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "numerobis": {
+                                        "firstname": "Numerobis", "": "",
+                                        "password": "gaulois-x-toujours",
+                                        "description": "Numerobis",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "amonbofis": {
+                                        "firstname": "Amonbofis", "": "",
+                                        "password": "V4r^Qp7*Wy",
+                                        "description": "Amonbofis",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "tournevis": {
+                                        "firstname": "Tournevis", "": "",
+                                        "password": "X6t!Jy2^Lq",
+                                        "description": "Tournevis",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                },
+                                "tumeheris": {
+                                        "firstname": "Tumeheris", "": "",
+                                        "password": "E9y@Wp3#Tk",
+                                        "description": "Tumeheris",
+                                        "groups": [],
+                                        "path": "CN=Users,DC=rome,DC=local"
+                                }
+            }
+                },
+        "armorique.local": {
+        "dc": "dc02",
+        "domain_password": "UIYHJKI75cKV+Pu",
+        "netbios_name": "ARMORIQUE",
+		"groups" : {
+                },
+            "gmsa" : {
+                "gmsa_account": {
+                    "gMSA_Name" : "gMSA-obelix",
+                    "gMSA_FQDN" : "gMSA-obelix.armorique.local",
+                    "gMSA_SPNs" : ["HTTP/village", "HTTP/village.armorique.local"],
+                    "gMSA_HostNames" : ["village"]
+                }
+            },
+          "acls" : {
+                "anonymous_rpc" : {"for": "NT AUTHORITY\\ANONYMOUS LOGON", "to": "DC=armorique,DC=local", "right": "ReadProperty", "inheritance": "All"},
+                "anonymous_rpc2" : {"for": "NT AUTHORITY\\ANONYMOUS LOGON", "to": "DC=armorique,DC=local", "right": "GenericExecute", "inheritance": "All"}
+            }, 			
+        "users": {
+            "asterix": {
+                "firstname": "Asterix", "",
+                "password": "M41x!Vw7@Yz",
+                "description": "Asterix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "obelix": {
+                "firstname": "Obelix", "",
+                "password": "Z19p#Xr4^Ty",
+                "description": "Obelix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "panoramix": {
+                "firstname": "Panoramix", "",
+                "password": "W51r&Jk2@Xv",
+                "description": "Panoramix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "abraracourcix": {
+                "firstname": "Abraracourcix", "",
+                "password": "T7x1!Pv8^Qr",
+                "description": "Abraracourcix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "assurancetourix": {
+                "firstname": "Assurancetourix", "",
+                "password": "M6v#1Zy9*Lq",
+                "description": "Assurancetourix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "bonemine": {
+                "firstname": "Bonemine", "",
+                "password": "E2t^V1w5@Ln",
+                "description": "Bonemine",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "ordralfabetix": {
+                "firstname": "Ordralfabetix", "",
+                "password": "H4x&Qp16!Rv",
+                "description": "Ordralfabetix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "cetautomatix": {
+                "firstname": "Cetautomatix", "",
+                "password": "F8y@Xo11#Tk",
+                "description": "Cetautomatix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "idefix": {
+                "firstname": "Idefix", "",
+                "password": "K7r!W1p2^Ln",
+                "description": "Idefix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "agecanonix": {
+                "firstname": "Agecanonix", "",
+                "password": "S9v#Jy13*Qx",
+                "description": "Agecanonix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "vercingetorix": {
+                "firstname": "Vercingetorix", "",
+                "password": "Y5t@Lk41!Wp",
+                "description": "Vercingetorix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "goudurix": {
+                "firstname": "Goudurix", "",
+                "password": "J2p^T1r8&Lq",
+                "description": "Goudurix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "jolitorax": {
+                "firstname": "Jolitorax", "",
+                "password": "P3x!Vw16^Yk",
+                "description": "Jolitorax",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "pepe": {
+                "firstname": "Pepe", "",
+                "password": "A7y@Qp11#Xv",
+                "description": "Pepe",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "cicatrix": {
+                "firstname": "Cicatrix", "",
+                "password": "G9r^Jk25*Tp",
+                "description": "Cicatrix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "falbala": {
+                "firstname": "Falbala", "",
+                "password": "D4t!X2o3@Wq",
+                "description": "Falbala",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "tragicomix": {
+                "firstname": "Tragicomix", "",
+                "password": "Z6p#Vy28^Xk",
+                "description": "Tragicomix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "diagnostix": {
+                "firstname": "Diagnostix", "",
+                "password": "C1x!Wq42@Lr",
+                "description": "Diagnostix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "antibiotix": {
+                "firstname": "Antibiotix", "",
+                "password": "N5v^Pk29#Tr",
+                "description": "Antibiotix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "ordalfabétix": {
+                "firstname": "Ordalfabétix", "",
+                "password": "B7r&Jk22*Xp",
+                "description": "Ordalfabétix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "prolix": {
+                "firstname": "Prolix", "",
+                "password": "R3y!Vw6@Tp",
+                "description": "Prolix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "informatix": {
+                "firstname": "Informatix", "",
+                "password": "T8p@Xo1#2Lk",
+                "description": "Informatix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "alambix": {
+                "firstname": "Alambix", "",
+                "password": "gaulois-x-toujours",
+                "description": "Alambix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "porquépix": {
+                "firstname": "Porquépix", "",
+                "password": "X6t!Jy2^2Lq",
+                "description": "Porquépix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+            },
+            "beaufix": {
+                "firstname": "Beaufix", "",
+                "password": "E9y@W2p3#Tk",
+                "description": "Beaufix",
+                "groups": [],
+                "path": "CN=Users,DC=armorique,DC=local"
+                                        }
+                                }
+                        }
+
+        }
+    }
+}

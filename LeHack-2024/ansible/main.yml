@@ -1,0 +1,60 @@
+---
+
+# Load datas
+- import_playbook: data.yml
+  vars:
+    data_path: "../ad/{{domain_name}}/data/"
+  tags: 'data'
+
+# Prepare servers
+- import_playbook: build.yml
+# Add monitoring
+#- import_playbook: elk.yml
+
+# --------------------------------------------------------------------
+# VM ready - start insert specific scenario
+# --------------------------------------------------------------------
+# Turn server into DC and load active directory data (users/groups/ou)
+#- import_playbook: ad.yml
+# create main domains, child domain and enroll servers
+
+## AD ----------
+- import_playbook: ad-servers.yml
+- import_playbook: ad-parent_domain.yml
+- import_playbook: ad-child_domain.yml
+- import_playbook: ad-members.yml
+# create the trust relationships
+- import_playbook: ad-trusts.yml
+# import the ad datas : users/groups...
+- import_playbook: ad-data.yml
+- import_playbook: local-users.yml
+# set the GMAS accounts
+- import_playbook: ad-gmsa.yml
+# install LAPS
+- import_playbook: laps.yml
+## MSSQL + IIS  ----------
+# configure servers vulns (done in the middle of ad install to let time before install relations and acl)
+#- import_playbook: servers.yml
+## AD - servers localgroup + rdp + inter domain relations & acl
+# set the rights and the group domains relations
+- import_playbook: ad-relations.yml
+# set adcs
+#- import_playbook: adcs.yml
+# set the ACL
+- import_playbook: ad-acl.yml
+
+## SERVERS ---------
+### MSSQL + IIS  ----------
+# configure servers vulns (done in the midle of ad install to let time before install relations and acl)
+#
+
+## SECURITY -----
+# --------------------------------------------------------------------
+# specifics security linked to the scenario are here
+- import_playbook: security.yml
+# --------------------------------------------------------------------
+# specifics vulns linked to the scenario are here
+- import_playbook: vulnerabilities.yml
+- import_playbook: cred-acl.yml
+
+- import_playbook: reboot.yml
