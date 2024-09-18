@@ -112,7 +112,7 @@ ansible-galaxy install -r ansible/requirements.yml
 
 ```bash
 cd ad/LEHACK/providers/vmware
-vagrant 
+vagrant up
 
 *note: For some distributions, you may need to run additional commands to install WinRM gems* this can be done via the following commands:
 
