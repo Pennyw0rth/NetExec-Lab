@@ -33,6 +33,7 @@ Submit a PR to add your writeup to this list :)
 
 - Installation depend of the provider you use, please follow the appropriate guide :
   - [Install with VmWare](./docs/install_with_vmware.md)
+  - [Install with VirtualBox](./docs/install_with_virtualbox.md)
 
 - Installation is in three parts :
   1. Templating : this will create the template to use (needed only for proxmox) 
