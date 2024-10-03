@@ -60,7 +60,7 @@ boxes = [
         target.vm.provision :shell, :path => "../../../../vagrant/Install-WMF3Hotfix.ps1", privileged: false
         target.vm.provision :shell, :path => "../../../../vagrant/ConfigureRemotingForAnsible.ps1", privileged: false
 		# Fix that pesky DNS issue and disable windows firewall before ansible esp for DC02
-	    target.vm.provision "shell", inline: "netsh advfirewall set allprofiles state off", privileged: true
+	      target.vm.provision "shell", inline: "netsh advfirewall set allprofiles state off", privileged: false
 
         # fix ip for vmware
         if ENV['VAGRANT_DEFAULT_PROVIDER'] == "vmware_desktop"
