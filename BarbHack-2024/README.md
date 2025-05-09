@@ -10,8 +10,6 @@ Obviously do not cheat by looking at the passwords and flags in the recipe files
 
 ### Original pitch
 
-The Gallic camp was attacked by the Romans and it seems that a traitor made this attack possible! Two domains must be compromised to find it 🔥
-
 ### Public Writeups
 
 
