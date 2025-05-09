@@ -4,12 +4,6 @@
 <img src=""/>
 </div>
 
-Welcome to the NetExec Active Directory Lab! This lab is designed to teach you how to exploit Active Directory (AD) environments using the powerful tool NetExec.
-
-Originally featured in the LeHack2024 Workshop, this lab is now available for free to everyone! In this lab, you’ll explore how to use the powerful tool NetExec to efficiently compromise an Active Directory domain during an internal pentest.
-
-The ultimate goal? Become Domain Administrator by following various attack paths, using nothing but NetExec! and Maybe BloodHound (Why not :P)
-
 Obviously do not cheat by looking at the passwords and flags in the recipe files, the lab must start without user to full compromise
 
 **Note**: One change has been made on this lab regarding the workshop, the part using msol module on nxc is replaced with a dump of lsass. The rest is identical.
@@ -20,8 +14,6 @@ The Gallic camp was attacked by the Romans and it seems that a traitor made this
 
 ### Public Writeups
 
-- https://www.rayanle.cat/lehack-2024-netexec-workshop-writeup/ by [@rayanlecat](https://x.com/rayanlecat)
-- https://blog.lasne.pro/posts/netexec-workshop-lehack2024/ by [@0xFalafel](https://x.com/0xFalafel)
 
 Submit a PR to add your writeup to this list :)
 
