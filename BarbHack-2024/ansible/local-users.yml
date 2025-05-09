@@ -1,0 +1,36 @@
+---
+# Load datas
+- import_playbook: data.yml
+  vars:
+    data_path: "../ad/{{ domain_name }}/data/"
+  tags: 'data'
+
+# Create a local user and password
+- hosts: srv01
+  tasks:
+    - name: Ensure user 'localix' is present
+      ansible.windows.win_user:
+        name: localix
+        password: wUSYIuhhWy!!12OL
+        state: present
+        groups:
+          - Administrators
+
+- hosts: srv01
+  tasks:
+    - name: Ensure domain user 'musculus' is in the local Administrators group
+      ansible.windows.win_group_membership:
+        name: Administrators
+        members: 
+          - "ROME\\musculus"
+        state: present
+
+- hosts: srv02
+  tasks:
+    - name: Ensure user 'localix' is present
+      ansible.windows.win_user:
+        name: localix
+        password: wUSYIuHHWy!!12OLZ
+        state: present
+        groups:
+          - Administrators

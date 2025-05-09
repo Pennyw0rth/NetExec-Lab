@@ -1,0 +1,7 @@
+- name: Add dns server zone
+  community.windows.win_dns_zone:
+    name: "{{zone_name}}"
+    type: forwarder
+    replication: "{{replication}}"
+    dns_servers:
+      - "{{master_server}}"

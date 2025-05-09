@@ -1,0 +1,22 @@
+# Load datas
+- import_playbook: data.yml
+  vars:
+    data_path: "../ad/{{domain_name}}/data/"
+  tags: 'data'
+
+
+- name: "Deny localix full access to Credentials and Protect folders"
+  hosts: srv01
+  tasks:
+    - name: "Deny localix full access to the Credentials folder"
+      ansible.windows.win_command: icacls "C:\Users\musculus\AppData\Roaming\Microsoft\Credentials" /deny localix:(F)
+
+    - name: "Deny localix full access to the Protect folder"
+      ansible.windows.win_command: icacls "C:\Users\musculus\AppData\Roaming\Microsoft\Protect" /deny localix:(F)
+
+    - name: "Deny administrator full access to the Credentials folder"
+      ansible.windows.win_command: icacls "C:\Users\musculus\AppData\Roaming\Microsoft\Credentials" /deny administrator:(F)
+
+    - name: "Deny administrator full access to the Protect folder"
+      ansible.windows.win_command: icacls "C:\Users\musculus\AppData\Roaming\Microsoft\Protect" /deny administrator:(F)  
+      

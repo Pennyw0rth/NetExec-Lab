@@ -1,0 +1,30 @@
+---
+# Load datas
+- import_playbook: data.yml
+  vars:
+    data_path: "../ad/{{domain_name}}/data/"
+  tags: 'data'
+
+- name: Install RSAT-AD-PowerShell feature
+  hosts: srv01
+  tasks:
+    - name: Ensure RSAT-AD-PowerShell is installed
+      ansible.windows.win_feature:
+        name: RSAT-AD-PowerShell
+        state: present
+
+- name: GMSA for Robin
+  hosts: srv01
+  gather_facts: no
+  vars:
+    domain: "{{lab.hosts[dict_key].domain}}"
+    ansible_become: true
+    ansible_become_method: runas
+    ansible_become_user: "{{domain}}\\Administrator"
+    ansible_become_password: "{{lab.domains[domain].domain_password}}"
+
+  tasks:
+    - name: Install gMSA on SRV01
+      ansible.windows.win_shell: |
+        Install-ADServiceAccount -Identity gmsa-robin
+        Test-ADServiceAccount -Identity gmsa-robin

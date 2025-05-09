@@ -1,0 +1,56 @@
+- name: "Force a DNS on the adapter {{nat_adapter}}"
+  ansible.windows.win_dns_client:
+    adapter_names: "{{nat_adapter}}"
+    dns_servers: 
+      - "{{dns_server}}"
+      - "{{hostvars[dns_domain].ansible_host}}"
+  when: force_dns_server == "yes"
+
+- name: Set a proxy for specific protocols
+  community.windows.win_http_proxy:
+    proxy:
+      http: "{{ad_http_proxy}}"
+      https: "{{ad_https_proxy}}"
+  when: http_proxy == "yes"
+
+- name: Configure IE to use a specific proxy per protocol
+  community.windows.win_inet_proxy:
+    proxy:
+      http: "{{ad_http_proxy}}"
+      https: "{{ad_https_proxy}}"
+  when: http_proxy == "yes"
+
+- name: Upgrade module PowerShellGet to fix accept license issue on last windows ansible version
+  win_shell: |
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    Install-PackageProvider -Name NuGet -Force
+    Install-Module PowerShellGet -Force
+
+- name: Windows | Check for ComputerManagementDsc Powershell module
+  win_psmodule:
+    name: ComputerManagementDsc
+    state: present
+
+- name: Windows | Enable Remote Desktop
+  win_dsc:
+    resource_name: RemoteDesktopAdmin
+    IsSingleInstance : 'yes'
+    Ensure: present
+    UserAuthentication: Secure
+
+- name: Windows | Check for xNetworking Powershell module
+  win_psmodule:
+    name: xNetworking
+    state: present
+
+- name: Firewall | Allow RDP through Firewall
+  win_dsc:
+    resource_name: xFirewall
+    Name: "Administrator access for RDP (TCP-In)"
+    Ensure: present
+    Enabled: True
+    Profile: "Domain"
+    Direction: "Inbound"
+    Localport: "3389"
+    Protocol: "TCP"
+    Description: "Opens the listener port for RDP"

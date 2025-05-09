@@ -1,0 +1,353 @@
+{
+    "lab": {
+        "hosts": {
+            "dc01": {
+                "hostname": "DC01",
+                "type": "dc",
+                "local_admin_password": "TjhgkbVXSx9rk",
+                "domain": "GOTHAM.CITY",
+                "path": "DC=GOTHAM,DC=CITY",
+                "local_groups": {
+                    "Administrators": []
+                },
+                "scripts": ["gmsa.ps1" , "eventviewerflag.ps1"],
+                "vulns": [
+                    "disable_firewall",
+                    "directory",
+                    "files",
+                    "shares"
+                ],
+                "vulns_vars": {
+                    "directory": {},
+                    "files": {
+                        "letter_in_shares": {
+                            "src": "dc01/Groups.xml",
+                            "dest": "\\\\gotham.city\\SYSVOL\\GOTHAM.CITY\\Policies\\{31B2F340-016D-11D2-945F-00C04FB984F9}\\USER\\Groups.xml"
+                        }
+                    }
+                }
+            },
+            "srv01": {
+                "hostname": "SRV01",
+                "type": "server",
+                "local_admin_password": "October2022",
+                "domain": "GOTHAM.CITY",
+                "path": "DC=GOTHAM,DC=CITY",
+                "use_laps": false,
+                "local_groups": {
+                    "Administrators": [],
+                    "Remote Desktop Users": [
+                        "GOTHAM\\joker"
+                    ]
+                },
+                "scripts": [
+                    "wayne.ps1"
+                ],
+                "vulns": [
+                    "disable_firewall",
+                    "directory",
+                    "files",
+                    "shares",
+                    "openshares"
+                ],
+                "vulns_vars": {
+                    "directory": {
+                        "shares": "C:\\CleanSlate",
+                        "CleanSlate": "C:\\CleanSlate"
+                    },
+                    "files": {
+                        "letter_in_shares01": {
+                            "src": "srv01/cleanslate.exe",
+                            "dest": "C:\\CleanSlate\\cleanslate.exe"
+                        },
+                        "flag": {
+                            "src": "srv01/flag.txt",
+                            "dest": "C:\\users\\joker\\Desktop\\flag.txt"
+                        },						
+                        "letter_in_shares": {
+                            "src": "srv01/wayne.exe",
+                            "dest": "C:\\wayne.exe"
+                        }
+                    }
+                }
+            },
+            "srv02": {
+                "hostname": "SRV02",
+                "type": "server",
+                "local_admin_password": "JKHG&*&&HJLLIgjhk",
+                "domain": "GOTHAM.CITY",
+                "path": "DC=GOTHAM,DC=CITY",
+                "use_laps": false,
+                "local_groups": {
+                    "Administrators": [],
+                    "Remote Desktop Users": [
+                        "GOTHAM\\harley.quinn"
+                    ]
+                },
+                "scripts": [
+                    "pointandprint.ps1"
+                ],
+                "vulns": [
+                    "disable_firewall",
+                    "files"
+                ],
+                "vulns_vars": {
+                    "directory": {},
+                    "files": {
+                        "winscp": {
+                            "src": "srv02/winscp.reg",
+                            "dest": "C:\\winscp.reg"
+                        },
+                        "flag": {
+                            "src": "srv02/flag.txt",
+                            "dest": "C:\\users\\harley.quinn\\Desktop\\flag.txt"
+                        }					
+                    }
+                }
+            }
+        },
+        "domains": {
+            "GOTHAM.CITY": {
+                "dc": "dc01",
+                "domain_password": "TjhgkbVXSx9rk",
+                "netbios_name": "GOTHAM",
+                "groups": {},
+                "gmsa": {
+                    "gmsa_account": {
+                        "gMSA_Name": "gmsa-robin",
+                        "gMSA_FQDN": "gmsa-robin.GOTHAM.CITY",
+                        "gMSA_SPNs": [
+                            "HTTP/DC01",
+                            "HTTP/DC01.GOTHAM.CITY"
+                        ],
+                        "gMSA_HostNames": [
+                            "DC01"
+                        ]
+                    }
+                },
+                "acls": {
+                    "GenericAll_gmsaDragon_drogo": { "for": "gmsa-robin$", "to": "harley.quinn", "right": "GenericAll", "inheritance": "None" },
+					"GenericAll_BA" : {"for": "harvey.dent", "to": "Backup Operators", "right": "GenericAll", "inheritance": "None"},
+                },
+                "users": {
+                    "bruce.wayne": {
+                        "firstname": "Bruce",
+                        "surname": "Wayne",
+                        "password": "Bruce@2024Wayne$!",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "joker": {
+                        "firstname": "Joker",
+                        "surname": "-",
+                        "password": "<3batman0893",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "alfred.pennyworth": {
+                        "firstname": "Alfred",
+                        "surname": "Pennyworth",
+                        "password": "Alfr3dP3nnyw0rth!#2024",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "selina.kyle": {
+                        "firstname": "Selina",
+                        "surname": "Kyle",
+                        "password": "C@tw0m@n_#Selina123",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "harvey.dent": {
+                        "firstname": "Harvey",
+                        "surname": "Dent",
+                        "password": "X76IAZS!j'Czu,",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "jim.gordon": {
+                        "firstname": "Jim",
+                        "surname": "Gordon",
+                        "password": "GCPD!J1mG0rd0n#2024",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "lucius.fox1337": {
+                        "firstname": "Lucius",
+                        "surname": "Fox1337",
+                        "password": "T3chM@st3r!_Lucius2024",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "barbara.gordon": {
+                        "firstname": "Barbara",
+                        "surname": "Gordon",
+                        "password": "B@rB@r@G0rD0n!2024",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "oswald.cobblepot": {
+                        "firstname": "Oswald",
+                        "surname": "Cobblepot",
+                        "password": "P3nguin$Ice!2024",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "edward.nygma": {
+                        "firstname": "Edward",
+                        "surname": "Nygma",
+                        "password": "R1ddl3M3!_Edw@rdNygm@2024",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "bane": {
+                        "firstname": "Bane",
+                        "surname": "-",
+                        "password": "Br3@k3r!_2024Ban3",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "victor.freeze": {
+                        "firstname": "Victor",
+                        "surname": "Freeze",
+                        "password": "C0ldFReeze_2024!Victor",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "harley.quinn": {
+                        "firstname": "Harley",
+                        "surname": "Quinn",
+                        "password": "H@rl3yQ!!nn_2024",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "dick.grayson": {
+                        "firstname": "Dick",
+                        "surname": "Grayson",
+                        "password": "N1ghtw1ng!_2024DickG",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "jason.todd": {
+                        "firstname": "Jason",
+                        "surname": "Todd",
+                        "password": "R3dH00d!_2024J@s0nT",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "tim.drake": {
+                        "firstname": "Tim",
+                        "surname": "Drake",
+                        "password": "R0b1n2.0!_T1mD2024",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "talia.al.ghul": {
+                        "firstname": "Talia",
+                        "surname": "Al",
+                        "password": "H3ir0fGh0ul_T@l1@2024",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "rachel.dawes": {
+                        "firstname": "Rachel",
+                        "surname": "Dawes",
+                        "password": "Just1c3!_R@ch3lD2024",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "ras.al.ghul": {
+                        "firstname": "Ras",
+                        "surname": "Al",
+                        "password": "Gh0stLead3r!_Ras2024",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "scarecrow": {
+                        "firstname": "Scarecrow",
+                        "surname": "-",
+                        "password": "F34rT0x1n!_Sc@r3crow2024",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "poison.ivy": {
+                        "firstname": "Poison",
+                        "surname": "Ivy",
+                        "password": "Gr33nQu33n!_2024P0is0n",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "black.mask": {
+                        "firstname": "Black",
+                        "surname": "Mask",
+                        "password": "M@sk3dF@ce!_Bl@ck2024",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "killer.croc": {
+                        "firstname": "Killer",
+                        "surname": "Croc",
+                        "password": "L1zardM@N_2024Croc!",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    },
+                    "deadshot": {
+                        "firstname": "Deadshot",
+                        "surname": "-",
+                        "password": "B@ngB@ng!_Deadsh0t2024",
+                        "city": "-",
+                        "description": "-",
+                        "groups": [],
+                        "path": "CN=Users,DC=GOTHAM,DC=CITY"
+                    }
+                }
+            }
+        }
+    }
+}
