@@ -1,8 +1,24 @@
-# BarbHack FREE Workshop 2024 (Gotham City - Active Directory Lab)
+# BarbHack CTF 2024 (Gotham City - Active Directory Lab)
 
-Obviously do not cheat by looking at the passwords and flags in the recipe files, the lab must start without user to full compromise
+<div>
+<img src="./barbhack.jpg"/>
+</div>
+
+Welcome to the NetExec Active Directory Lab! This lab is designed to teach you how to exploit Active Directory (AD) environments using the powerful tool NetExec.
+
+Originally featured in the Barbhack 2024 CTF, this lab is now available for free to everyone! In this lab, you’ll explore how to use the powerful tool NetExec to efficiently compromise an Active Directory domain during an internal pentest.
+
+The ultimate goal? Become Domain Administrator by following various attack paths, using nothing but NetExec! and Maybe BloodHound (Why no
+
+Obviously do not cheat by looking at the passwords and flags in the recipe files, the lab must start without user to full compromise.
 
 ### Public Writeups
+
+Currently, no public writeup exist for this lab, feel free to submit one with a PR !
+
+### Original pitch
+
+Time compromise Gotham City !
 
 ## Install dependencies
 
@@ -24,5 +40,5 @@ Obviously do not cheat by looking at the passwords and flags in the recipe files
 
 - Aleem Ladha [@LadhaAleem](https://x.com/LadhaAleem) for creating this project and converting the Barbhack-2024 workshop to an ansible playbook  
 - M4yFly [@M4yFly](https://x.com/M4yFly) for the amazing GOAD porject and ansible playbooks (This repo is based on the work of [Mayfly277](https://github.com/Orange-Cyberdefense/GOAD/))
-- mpgn [@mpgn_x64](https://x.com/mpgn_x64) for the Barbhack workshop
+- mpgn [@mpgn_x64](https://x.com/mpgn_x64) for the Barbhack Windows CTF
 - NetExec's dev team for this awesome tool !

@@ -79,8 +79,8 @@ gem install winrm winrm-fs winrm-elevated
 sudo apt install git
 git clone https://github.com/Pennyw0rth/NetExec-Lab
 cd BARBHACK-2024/ansible
-sudo apt install python3.8-venv
-python3.8 -m virtualenv .venv
+sudo apt install python3-venv
+python3.8 -m venv .venv
 source .venv/bin/activate
 ```
 
