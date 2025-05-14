@@ -16,6 +16,8 @@ Obviously do not cheat by looking at the passwords and flags in the recipe files
 
 Currently, no public writeup exist for this lab, feel free to submit one with a PR !
 
+There is 13 flags to find in this lab !
+
 ### Original pitch
 
 Time compromise Gotham City !
