@@ -62,7 +62,7 @@
                         },
                         "flag": {
                             "src": "srv01/flag.txt",
-                            "dest": "C:\\users\\administrator\\Desktop\\flag.txt"
+                            "dest": "C:\\users\\public\\Desktop\\flag.txt"
                         },						
                         "letter_in_shares": {
                             "src": "srv01/wayne.exe",
@@ -100,7 +100,7 @@
                         },
                         "flag": {
                             "src": "srv02/flag.txt",
-                            "dest": "C:\\users\\administrator\\Desktop\\flag.txt"
+                            "dest": "C:\\users\\public\\Desktop\\flag.txt"
                         }					
                     }
                 }
