@@ -1,0 +1,9 @@
+- name: Create directory
+  win_file:
+    path: C:\tmp
+    state: directory
+
+- name: Download LEHACK img in C:\tmp
+  win_copy:
+    src: lehack-2024.png
+    dest: C:\tmp\lehack-2024.png

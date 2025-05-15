@@ -1,0 +1,29 @@
+---
+# Load datas
+- import_playbook: data.yml
+  vars:
+    data_path: "../ad/{{domain_name}}/data/"
+  tags: 'data'
+# set AD datas ==================================================================================================
+
+- name: ADCS
+  hosts: adcs
+  roles:
+  - { role: 'adcs', tags: 'adcs'}
+  vars:
+    domain: "{{lab.hosts[dict_key].domain}}"
+    domain_username: "{{domain}}\\Administrator"
+    domain_password: "{{lab.domains[domain].domain_password}}"
+    ca_common_name: "{{lab.domains[domain].netbios_name}}-CA"
+    ca_web_enrollment: "{{lab.domains[domain].ca_web_enrollment | default(true)}}"
+
+- name: ADCS
+  hosts: adcs_customtemplates
+  roles:
+  - { role: 'adcs_templates', tags: 'adcs_templates'}
+  vars:
+    domain: "{{lab.hosts[dict_key].domain}}"
+    domain_username: "{{domain}}\\Administrator"
+    domain_password: "{{lab.domains[domain].domain_password}}"
+    ca_common_name: "{{lab.domains[domain].netbios_name}}-CA"
+    ca_host: "{{lab.domains[domain].ca_server}}"

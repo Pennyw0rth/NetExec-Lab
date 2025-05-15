@@ -1,0 +1,27 @@
+---
+- name: Manage WayneService
+  hosts: srv01
+  tasks:
+    - name: Run PowerShell script to manage WayneService
+      ansible.windows.win_powershell:
+        script: |
+          $serviceName = "WayneService"
+          $servicePath = "C:\Wayne\wayne.exe"
+
+          # Check if the service exists
+          $serviceExists = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
+
+          if ($serviceExists) {
+              # Stop the service if it's running
+              Stop-Service -Name $serviceName -Force
+
+              # Delete the service
+              sc.exe delete $serviceName
+          }
+
+          # Now install the service
+          New-Service -Name $serviceName -BinaryPathName $servicePath -StartupType Automatic
+
+          # Start the service
+          Start-Service -Name $serviceName
+      ignore_errors: yes
