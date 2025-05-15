@@ -8,7 +8,7 @@ Welcome to the NetExec Active Directory Lab! This lab is designed to teach you h
 
 Originally featured in the Barbhack 2024 CTF, this lab is now available for free to everyone! In this lab, you’ll explore how to use the powerful tool NetExec to efficiently compromise an Active Directory domain during an internal pentest.
 
-The ultimate goal? Become Domain Administrator by following various attack paths, using nothing but NetExec! and Maybe BloodHound (Why no
+The ultimate goal? Become Domain Administrator by following various attack paths, using nothing but NetExec! and Maybe BloodHound (Why not?) 
 
 Obviously do not cheat by looking at the passwords and flags in the recipe files, the lab must start without user to full compromise.
 
