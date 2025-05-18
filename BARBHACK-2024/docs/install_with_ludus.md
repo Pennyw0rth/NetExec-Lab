@@ -8,4 +8,4 @@
 
 ## Installation : Follow the link below
 
-https://ludus.cloud/docs/environment-guides/barbhack-ctf-2024
+https://docs.ludus.cloud/docs/environment-guides/barbhack-ctf-2024
