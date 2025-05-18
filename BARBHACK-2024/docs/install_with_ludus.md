@@ -6,4 +6,6 @@
   <img alt="icon_ansible" width="150"  height="150" src="./img/icon_ansible.png">
 </div>
 
-## Installation : In progress
+## Installation : Follow the link below
+
+https://ludus.cloud/docs/environment-guides/barbhack-ctf-2024
