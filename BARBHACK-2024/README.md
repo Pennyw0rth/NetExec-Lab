@@ -14,7 +14,7 @@ Obviously do not cheat by looking at the passwords and flags in the recipe files
 
 ### Public Writeups
 
-Currently, no public writeup exist for this lab, feel free to submit one with a PR !
+- [https://www.acceis.fr/write-up-barbhack-challenge-active-directory/](https://www.acceis.fr/write-up-barbhack-challenge-active-directory/) by [KlemouLeZoZo](https://kleman.pw/seigneur.html)
 
 There is 13 flags to find in this lab !
 
