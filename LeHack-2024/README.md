@@ -22,6 +22,7 @@ The Gallic camp was attacked by the Romans and it seems that a traitor made this
 
 - https://www.rayanle.cat/lehack-2024-netexec-workshop-writeup/ by [@rayanlecat](https://x.com/rayanlecat)
 - https://blog.lasne.pro/posts/netexec-workshop-lehack2024/ by [@0xFalafel](https://x.com/0xFalafel)
+- [LeHack CTF 2024 - Active Directory writeup](https://0xpix3l.github.io/CTFs/LeHackCTF/) by [0xPix3l](https://x.com/zzziadmo)
 
 Submit a PR to add your writeup to this list :)
 
