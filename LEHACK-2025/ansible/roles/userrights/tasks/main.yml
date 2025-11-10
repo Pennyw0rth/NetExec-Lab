@@ -1,0 +1,6 @@
+- name: Add account to Log on as batch
+  ansible.windows.win_user_right:
+    name: 'SeBatchLogonRight'
+    users:
+      - 'EMPIRE\krennic'
+    action: add

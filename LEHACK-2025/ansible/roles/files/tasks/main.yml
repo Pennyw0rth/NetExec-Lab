@@ -1,0 +1,55 @@
+- name: Ensure C:\tmp exists
+  ansible.windows.win_file:
+    path: "C:\\Destroyer_Access"
+    state: directory
+
+- name: Download Certipy.exe if not already present
+  ansible.windows.win_get_url:
+    url: "https://github.com/ly4k/Certipy/releases/download/5.0.3/Certipy.exe"
+    dest: "C:\\Destroyer_Access\\certipy.exe"
+    force: no
+
+- name: Remove any existing PFX files
+  ansible.windows.win_shell: |
+    Get-ChildItem -Path "C:\Destroyer_Access" -Filter "*.pfx" -ErrorAction SilentlyContinue | Remove-Item -Force
+  args:
+    executable: powershell.exe
+  changed_when: false
+
+- name: Run Certipy request
+  ansible.windows.win_powershell:
+    script: |
+      Set-Location "C:\Destroyer_Access"
+      & 'C:\Destroyer_Access\certipy.exe' req `
+        -target 'jedha.rebels.local' `
+        -u 'poe@rebels.local' `
+        -p '4zHB5sK5N?^8KsJ' `
+        -ca 'REBELS-CA' `
+        -template user
+  register: certipy_output
+  ignore_errors: true
+
+- name: Show Certipy output
+  ansible.builtin.debug:
+    var: certipy_output.output
+
+
+- name: Wait 3 seconds for file creation
+  ansible.builtin.pause:
+    seconds: 3
+
+- name: Find generated PFX file(s)
+  ansible.windows.win_find:
+    paths: "C:\\Destroyer_Access"
+    patterns: "*.pfx"
+  register: found_pfx
+
+- name: Show found PFX files
+  ansible.builtin.debug:
+    var: found_pfx.files
+
+  vars:
+    ansible_become: yes
+    ansible_become_method: runas
+    ansible_become_user: "{{ domain_username }}"
+    ansible_become_password: "{{ domain_password }}"

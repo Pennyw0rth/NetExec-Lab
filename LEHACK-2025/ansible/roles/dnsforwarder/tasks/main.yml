@@ -1,0 +1,7 @@
+- name: Add conditional forwarder zones
+  community.windows.win_dns_zone:
+    name: "{{ item.name }}"
+    type: forwarder
+    dns_servers: "{{ item.dns_servers }}"
+  loop: "{{ domains }}"
+  when: item.name != ansible_domain

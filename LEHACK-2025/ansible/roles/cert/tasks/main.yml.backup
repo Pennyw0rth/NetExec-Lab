@@ -1,0 +1,10 @@
+- name: Run exact Certipy command (powerShell)
+  ansible.windows.win_powershell:
+    script: |
+      # ensure working dir
+      if (-not (Test-Path -Path "C:\tmp")) { New-Item -ItemType Directory -Path "C:\tmp" | Out-Null }
+      Set-Location "C:\tmp"
+      rm .\poe.pfx -Force
+      # execute the exact command you requested
+      & 'C:\tmp\certipy.exe' req -target 'jedha.rebels.local' -u 'poe@rebels.local' -p 'password' -ca 'REBELS-CA' -template user
+  register: certipy_output

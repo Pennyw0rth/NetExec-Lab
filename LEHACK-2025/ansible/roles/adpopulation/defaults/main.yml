@@ -1,0 +1,6 @@
+populate_ad_data_file: "{{ playbook_dir }}/datasources/ad_data_sandbox.pwnzone.lab.yml"
+domain: "sandbox.pwnzone.lab"
+ous: []
+groups: []
+users: []
+CN_base_dn: "DC=sandbox,DC=pwnzone,DC=lab"

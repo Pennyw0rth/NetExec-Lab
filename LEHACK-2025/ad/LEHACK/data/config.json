@@ -1,0 +1,182 @@
+{
+    "lab": {
+        "hosts": {
+            "dc01": {
+                "hostname": "coruscant",
+                "type": "dc",
+                "local_admin_password": "TjhgkbVXSx9rk",
+                "domain": "empire.local",
+                "path": "DC=empire,DC=local",
+                "local_groups": {
+                    "Administrators": []
+                },
+                "scripts": ["dcsync_vader.ps1", "empire.ps1", "rdp_scheduler.ps1" ],
+                "vulns": ["disable_firewall" , "files" , "directory" ],
+				"vulns_vars" : {
+					"directory": {
+                    "setup": "c:\\setup"
+                },
+					"files" : {
+                    "rdp" : {
+                        "src" : "dc01/bot_rdp.ps1",
+                        "dest" : "c:\\windows\\tasks\\bot_rdp.ps1"
+                    }	
+		}		}
+            },
+            "srv01": {
+                "hostname": "mustafar",
+                "type": "server",
+                "local_admin_password": "TjhgkbVXSx9rk",
+                "domain": "empire.local",
+                "path": "DC=empire,DC=local",
+                "local_groups": {
+                    "Administrators": [],
+                    "Remote Desktop Users": [
+                                  "empire\\krennic",
+                                  "empire\\grievoussssss"
+                                       ]
+                },
+                "scripts": ["mustafar.ps1"],
+                "mssql": {
+                    "sa_password": "YourStrongPasswordHere!",
+                    "svcaccount": "sql_svc",
+                    "sysadmins": [],
+                    "executeasuser": {},
+                    "linked_servers": {
+                        "DANTOOINE": {
+                            "data_src": "dantooine.rebels.local",
+                            "users_mapping": [
+                                {
+                                    "local_login": "droideka",
+                                    "remote_login": "sa",
+                                    "remote_password": "YourStrongPasswordHere!"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "vulns": ["disable_firewall", "autologon"],
+                "vulns_vars": {
+                    "autologon": {
+                        "krennic": {
+                            "username": "empire\\krennic",
+                            "password": "liu8Sith"
+                        },
+                        "grievoussssss": {
+                            "username": "empire\\grievoussssss",
+                            "password": "BNyuiuu456gfd"
+                        }
+                    }
+                }
+            },
+            "dc02": {
+                "hostname": "jedha",
+                "type": "dc",
+                "local_admin_password": "TjhgkbVXSx9rk",
+                "domain": "rebels.local",
+                "path": "DC=rebels,DC=local",
+                "local_groups": {
+                    "Administrators": []
+                },
+                "scripts": ["rebels.ps1", "rebelscomputer.ps1"],
+                "vulns": ["disable_firewall"]
+            },
+            "srv02": {
+                "hostname": "dantooine",
+                "type": "server",
+                "local_admin_password": "TjhgkbVXSx9rk",
+                "domain": "rebels.local",
+                "path": "DC=rebels,DC=local",
+                "local_groups": {
+                    "Administrators": ["rebels\\poe"],
+                    "Remote Desktop Users": []
+                },
+                "scripts": ["endor.ps1"],
+                "mssql": {
+                    "sa_password": "YourStrongPasswordHere!",
+                    "svcaccount": "sql_svc",
+                    "sysadmins": [],
+                    "executeasuser": {},
+                    "linked_servers": {
+                        "DANTOOINE": {
+                            "data_src": "dantooine.rebels.local",
+                            "users_mapping": [
+                                {
+                                    "local_login": "droideka",
+                                    "remote_login": "sa",
+                                    "remote_password": "YourStrongPasswordHere!"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "vulns": ["disable_firewall", "directory", "shares", "permissions", "openshares"],
+                "vulns_vars": {
+                  "shares" : {
+                    "Destroyer_Access" : {
+                        "path"   : "C:\\Destroyer_Access",
+                        "list"   : "yes",
+                        "full"   : "REBELS\\gMSA-scarif$",
+                        "change" : "REBELS\\gMSA-scarif$",
+                        "read"   : "REBELS\\gMSA-scarif$"
+                    }
+                },       
+                    "permissions": {
+                        "Destroyer_Access": {
+                            "path": "C:\\Destroyer_Access",
+                            "user": "REBELS\\gMSA-scarif$",
+                            "rights": "FullControl,Read,Write"
+                        }
+                    }
+                }
+            }
+        },
+        "domains": {
+            "empire.local": {
+                "dc": "dc01",
+                "domain_password": "TjhgkbVXSx9rk",
+                "netbios_name": "EMPIRE",
+                "groups": {},
+                "users": {
+                    "sql_svc": {
+                        "firstname": "sql",
+                        "surname": "service",
+                        "password": "YouWillNotKerboroast1ngMeeeeee",
+                        "city": "-",
+                        "description": "sql service",
+                        "groups": [],
+                        "path": "CN=Users,DC=empire,DC=local",
+                        "spns": ["MSSQLSvc/mustafar.empire.local:1433", "MSSQLSvc/mustafar.empire.local"]
+                    }
+                }
+            },
+            "rebels.local": {
+                "dc": "dc02",
+                "domain_password": "TjhgkbVXSx9rk",
+                "netbios_name": "REBELS",
+                "gmsa": {
+                    "gmsa_account": {
+                        "gMSA_Name": "gMSA-scarif",
+                        "gMSA_FQDN": "gMSA-scarif.rebels.local",
+                        "gMSA_SPNs": [],
+                        "gMSA_HostNames": ["endor"]
+                    }
+                },
+                "groups": {},
+                "users": {
+                    "sql_svc": {
+                        "firstname": "sql",
+                        "surname": "service",
+                        "password": "YouWillNotKerboroast1ngMeeeeee",
+                        "city": "-",
+                        "description": "sql service",
+                        "groups": [],
+                        "path": "CN=Users,DC=rebels,DC=local",
+                        "spns": ["MSSQLSvc/dantooine.rebels.local:1433", "MSSQLSvc/dantooine.rebels.local"]
+                    }
+                }
+            }
+        }
+    }
+}
+

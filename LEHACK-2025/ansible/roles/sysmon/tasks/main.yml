@@ -1,0 +1,87 @@
+- name: Create Sysmon directory
+  win_file:
+    path: C:\Sysmon
+    state: directory
+
+- name: Check if Sysmon zip already exists
+  ansible.windows.win_stat:
+    path: C:\Sysmon\Sysmon.zip
+  register: sysmon_zip_stat
+
+- name: Download Sysmon zip (only if not present)
+  ansible.windows.win_get_url:
+    url: https://download.sysinternals.com/files/Sysmon.zip
+    dest: C:\Sysmon\Sysmon.zip
+    force: no
+  when: not sysmon_zip_stat.stat.exists
+  register: sysmon_download_result
+  retries: 3
+  delay: 10
+  until: sysmon_download_result is succeeded
+
+
+- name: Unzip Sysmon
+  community.windows.win_unzip:
+    src: C:\Sysmon\Sysmon.zip
+    dest: C:\Sysmon
+    creates: C:\Sysmon\Sysmon64.exe # Indicator for successful unzip
+  register: unzip_result
+
+- name: Check if Sysmon config already exists
+  ansible.windows.win_stat:
+    path: C:\Sysmon\sysmonconfig.xml
+  register: sysmon_config_stat
+
+- name: Copy Olaf Hartong's Sysmon modular config
+  ansible.windows.win_template:
+    src: sysmon-olaf-hartong.xml
+    dest: C:\Sysmon\sysmonconfig.xml
+    backup: yes
+  register: sysmon_config_copy
+
+# --- Logic: Uninstall existing Sysmon64 if found before reinstalling ---
+- name: Check if Sysmon64 service exists
+  ansible.windows.win_service_info:
+    name: Sysmon64
+  register: sysmon64_info
+
+- name: Uninstall existing Sysmon64 service if found
+  win_command: C:\Sysmon\Sysmon64.exe -accepteula -u
+  args:
+    chdir: C:\Sysmon
+  register: sysmon_uninstall_result
+  changed_when: sysmon_uninstall_result.rc != 0
+  failed_when: sysmon_uninstall_result.rc not in [0, 255] # 0 = success, 255 = not installed (no error)
+  when: sysmon64_info.exists # Only run if Sysmon64 service exists
+
+
+# --- Always (re)install Sysmon with config (now expecting "Sysmon64" as service name) ---
+- name: Install Sysmon with configuration
+  win_command: C:\Sysmon\Sysmon64.exe -accepteula -i C:\Sysmon\sysmonconfig.xml
+  args:
+    chdir: C:\Sysmon
+  register: sysmon_install_result
+  changed_when: sysmon_install_result.rc != 0
+  failed_when: sysmon_install_result.rc not in [0, 255] # 0 = success, 255 = already installed with same config
+  retries: 3
+  delay: 5 # Retry a few times in case of transient issues
+
+- name: Ensure Sysmon service is running
+  win_service:
+    name: Sysmon64
+    state: started
+    start_mode: auto
+
+# --- Cleanup temporary files after successful installation ---
+- name: Clean up Sysmon zip file after successful installation
+  ansible.windows.win_file:
+    path: C:\Sysmon\Sysmon.zip
+    state: absent
+  when: sysmon_install_result.rc == 0
+  ignore_errors: true
+
+- name: Verify Sysmon service is running after cleanup
+  ansible.windows.win_service_info:
+    name: Sysmon64
+  register: sysmon_final_check
+  failed_when: false

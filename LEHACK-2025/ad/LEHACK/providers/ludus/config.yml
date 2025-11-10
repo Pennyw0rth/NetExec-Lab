@@ -1,0 +1,48 @@
+ludus:
+  - vm_name: "{{ range_id }}-dc01"
+    hostname: "{{ range_id }}-dc01"
+    template: win2022-server-x64-template
+    vlan: 10
+    ip_last_octet: 5
+    ram_gb: 4
+    cpus: 4
+    windows:
+      sysprep: true
+  - vm_name: "{{ range_id }}-dc02"
+    hostname: "{{ range_id }}-dc02"
+    template: win2022-server-x64-template
+    vlan: 10
+    ip_last_octet: 7
+    ram_gb: 4
+    cpus: 4
+    windows:
+      sysprep: true
+  - vm_name: "{{ range_id }}-srv01"
+    hostname: "{{ range_id }}-srv01"
+    template: win2022-server-x64-template
+    vlan: 10
+    ip_last_octet: 6
+    ram_gb: 4
+    cpus: 4
+    windows:
+      sysprep: true
+  - vm_name: "{{ range_id }}-srv02"
+    hostname: "{{ range_id }}-srv02"
+    template: win2022-server-x64-template
+    vlan: 10
+    ip_last_octet: 8
+    ram_gb: 4
+    cpus: 4
+    windows:
+      sysprep: true
+  - vm_name: "{{ range_id }}-kali"
+    hostname: "{{ range_id }}-kali"
+    template: kali-x64-desktop-template
+    vlan: 10
+    ip_last_octet: 99
+    ram_gb: 4
+    cpus: 4
+    linux: true
+    testing:
+      snapshot: false
+      block_internet: false

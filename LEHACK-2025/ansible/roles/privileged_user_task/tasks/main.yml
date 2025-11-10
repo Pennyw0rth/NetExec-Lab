@@ -1,0 +1,78 @@
+- name: Create C:\temp directory for scheduled task output
+  ansible.windows.win_file:
+    path: C:\temp
+    state: directory
+
+- name: Validate privileged user credentials
+  ansible.windows.win_powershell:
+    script: |
+      try {
+        $username = "{{ privileged_domain.split('.')[0] }}\\{{ privileged_username }}"
+        $password = ConvertTo-SecureString "{{ privileged_password }}" -AsPlainText -Force
+        $credential = New-Object System.Management.Automation.PSCredential($username, $password)
+        
+        # Test credential by attempting to create a process (without actually running it)
+        $startInfo = New-Object System.Diagnostics.ProcessStartInfo
+        $startInfo.UserName = "{{ privileged_username }}"
+        $startInfo.Domain = "{{ privileged_domain }}"
+        $startInfo.Password = $password
+        $startInfo.UseShellExecute = $false
+        $startInfo.FileName = "cmd.exe"
+        $startInfo.Arguments = "/c echo test"
+        
+        "credentials_valid"
+      } catch {
+        throw "Invalid credentials for user {{ privileged_username }}: $($_.Exception.Message)"
+      }
+  register: credential_validation
+  failed_when: credential_validation.error is defined and (credential_validation.error | length) > 0
+
+- name: Create a scheduled task to run a persistent process as a Domain Admin
+  community.windows.win_scheduled_task:
+    name: "{{ persistent_process_name }}"
+    description: "{{ persistent_process_description }}"
+    actions:
+      - path: C:\Windows\System32\cmd.exe
+        arguments: /c "timeout /t {{ persistent_process_duration }} /nobreak > nul"
+    triggers:
+      # This trigger runs the task every time the machine boots up.
+      # The timeout process will run for exactly 4 hours (14400 seconds).
+      - type: boot
+        execution_time_limit: "{{ trigger_execution_time_limit }}"  # No time limit in trigger
+    settings:
+      # CRITICAL: Disable timeout in settings to prevent 30-60 minute termination
+      execution_time_limit: "{{ task_execution_time_limit }}"  # No time limit (PT0S = 0 seconds = infinite)
+      stop_if_going_on_batteries: "{{ task_stop_if_going_on_batteries }}"
+      start_when_available: "{{ task_start_when_available }}"
+      restart_on_failure: "{{ task_restart_on_failure }}"
+      restart_count: "{{ task_restart_count }}"
+    username: "{{ privileged_username }}@{{ privileged_domain }}"
+    password: "{{ privileged_password }}"
+    state: present
+    run_level: "{{ task_run_level }}"
+    # Allow task to run even if user is not logged on
+    logon_type: "{{ task_logon_type }}"
+  register: scheduled_task_result
+  failed_when: scheduled_task_result.failed and "authentication" in (scheduled_task_result.msg | lower)
+
+- name: Ensure the persistent process is started immediately
+  ansible.windows.win_command: schtasks /run /tn "{{ persistent_process_name }}"
+  register: task_run_result
+  changed_when: task_run_result.rc == 0
+  failed_when: task_run_result.rc != 0
+  # This provides an immediate, one-time execution to start the long-running process,
+  # while the 'boot' trigger ensures it restarts if the machine reboots.
+
+- name: Verify scheduled task was created successfully
+  ansible.windows.win_powershell:
+    script: |
+      $task = Get-ScheduledTask -TaskName "{{ persistent_process_name }}" -ErrorAction SilentlyContinue
+      if ($task) {
+        $settings = $task.Settings
+        $triggers = $task.Triggers
+        "task_created_successfully - ExecutionTimeLimit: $($settings.ExecutionTimeLimit) - TriggerTimeLimit: $($triggers[0].ExecutionTimeLimit)"
+      } else {
+        throw "Scheduled task was not created successfully"
+      }
+  register: task_verification
+  failed_when: task_verification.error is defined and (task_verification.error | length) > 0

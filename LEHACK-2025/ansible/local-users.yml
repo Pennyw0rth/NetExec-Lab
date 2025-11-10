@@ -1,0 +1,25 @@
+---
+# Load datas
+- import_playbook: data.yml
+  vars:
+    data_path: "../ad/{{ domain_name }}/data/"
+  tags: 'data'
+
+- hosts: srv02
+  tasks:
+    - name: Ensure domain user 'poe' is in the local Administrators group
+      ansible.windows.win_group_membership:
+        name: Administrators
+        members: 
+          - "REBELS\\poe"
+        state: present
+
+- hosts: srv01
+  tasks:
+    - name: Ensure domain user 'poe' is in the local Administrators group
+      ansible.windows.win_group_membership:
+        name: 'Remote Desktop Users'
+        members:
+          - "EMPIRE\\krennic"
+          - "EMPIRE\\grievoussssss"
+        state: present

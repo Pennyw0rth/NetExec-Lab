@@ -1,0 +1,51 @@
+- name: Create SQL login 'droideka' with password
+  win_shell: |
+    SqlCmd -E -Q "IF NOT EXISTS (SELECT name FROM sys.sql_logins WHERE name = 'droideka')
+    BEGIN
+        CREATE LOGIN droideka WITH PASSWORD = 'droideka', CHECK_POLICY = OFF;
+    END"
+
+- name: Create Windows login for EMPIRE\krennic
+  win_shell: |
+    SqlCmd -E -Q "IF NOT EXISTS (SELECT name FROM sys.server_principals WHERE name = N'EMPIRE\krennic')
+    BEGIN
+        CREATE LOGIN [EMPIRE\krennic] FROM WINDOWS;
+    END"
+
+- name: Grant VIEW ANY DEFINITION to EMPIRE\krennic
+  win_shell: |
+    SqlCmd -E -Q "GRANT VIEW ANY DEFINITION TO [EMPIRE\krennic];"
+
+- name: Enable xp_cmdshell locally
+  ansible.windows.win_shell: |
+    SqlCmd -E -Q "EXEC sp_configure 'show advanced options', 1; RECONFIGURE;"
+    SqlCmd -E -Q "EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE;"
+
+- name: Drop old linked server if exists
+  ansible.windows.win_shell: |
+    SqlCmd -E -Q "IF EXISTS (SELECT * FROM sys.servers WHERE name = N'DANTOOINE') EXEC sp_dropserver N'DANTOOINE', 'droplogins';"
+
+- name: Create linked server to DANTOOINE
+  ansible.windows.win_shell: |
+    SqlCmd -E -Q "EXEC sp_addlinkedserver @server = N'DANTOOINE', @srvproduct = '', @provider = N'SQLNCLI', @datasrc = N'DANTOOINE';"
+
+- name: Map droideka to remote sa
+  ansible.windows.win_shell: |
+    SqlCmd -E -Q "EXEC master.dbo.sp_addlinkedsrvlogin @rmtsrvname = N'DANTOOINE', @useself = N'false', @locallogin = N'droideka', @rmtuser = N'sa', @rmtpassword = N'YourStrongPasswordHere!';"
+
+- name: Enable RPC and RPC Out
+  ansible.windows.win_shell: |
+    SqlCmd -E -Q "EXEC sp_serveroption @server = N'DANTOOINE', @optname = N'rpc', @optvalue = N'true';"
+    SqlCmd -E -Q "EXEC sp_serveroption @server = N'DANTOOINE', @optname = N'rpc out', @optvalue = N'true';"
+
+- name: Test linked server connection (using droideka SQL auth)
+  win_shell: |
+    SqlCmd -U droideka -P "droideka" -Q "EXEC sp_testlinkedserver N'DANTOOINE';"
+
+- name: Test remote query execution (using droideka SQL auth)
+  win_shell: |
+    SqlCmd -U droideka -P "droideka" -Q "SELECT name FROM DANTOOINE.master.sys.databases;"
+
+- name: Test remote xp_cmdshell (using droideka SQL auth)
+  win_shell: |
+    SqlCmd -U droideka -P "droideka" -Q "EXEC ('EXEC xp_cmdshell ''whoami'';') AT DANTOOINE;"

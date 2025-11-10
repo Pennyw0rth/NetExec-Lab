@@ -1,0 +1,18 @@
+# PowerShell Logging Role Defaults
+# These settings control PowerShell logging behavior
+
+# PowerShell Script Block Logging
+enable_script_block_logging: true
+
+# PowerShell Module Logging  
+enable_module_logging: true
+module_names_to_log: "*"  # Log all modules
+
+# PowerShell Transcription
+enable_transcription: true
+transcription_output_directory: "C:\\Windows\\Temp\\PowerShellTranscripts"
+enable_invocation_header: true
+
+# WinRM restart settings
+winrm_restart_delay_seconds: 120  # 2 minutes after PS logging config
+winrm_restart_task_timeout: "PT5M"  # 5 minute timeout for restart task

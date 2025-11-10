@@ -1,0 +1,10 @@
+domains:
+  - name: "sandbox.pwnzone.lab"
+    dns_servers:
+      - "{{ hostvars['dc02']['ansible_host'] }}"
+  - name: "pwnzone.lab"
+    dns_servers:
+      - "{{ hostvars['dc02']['ansible_host'] }}"
+  - name: "treasureisland.lab"
+    dns_servers:
+      - "{{ hostvars['dc03']['ansible_host'] }}"
