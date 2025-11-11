@@ -18,9 +18,6 @@ Obviously do not cheat by looking at the passwords and flags in the recipe files
 
 There is 13 flags to find in this lab !
 
-### Original pitch
-
-Time compromise Gotham City !
 
 ## Install dependencies
 
