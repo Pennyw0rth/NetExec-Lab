@@ -100,7 +100,7 @@ case BARBHACK in
         #defend_gotham rebootsrv01.yml
         ;;
     *)
-        echo "$JOKER_ATTACK Unknown system: BARBHACK. Rebel command cannot deploy defenses!"
+        echo "$JOKER_ATTACK Unknown system: LEHACK. Rebel command cannot deploy defenses!"
         exit 1
         ;;
 esac
