@@ -1,0 +1,19 @@
+---
+# Wireshark installation defaults
+wireshark_version: "4.4.9"
+wireshark_installer_url: "https://2.na.dl.wireshark.org/win64/Wireshark-{{ wireshark_version }}-x64.exe"
+wireshark_installer_path: "C:\\temp\\Wireshark-{{ wireshark_version }}-x64.exe"
+wireshark_install_dir: "C:\\Program Files\\Wireshark"
+
+# Installation options
+wireshark_silent_install: true
+wireshark_install_npcap: true
+wireshark_install_usb_capture: false
+
+# Desktop shortcut creation
+wireshark_create_desktop_shortcut: true
+wireshark_create_start_menu_shortcut: true
+
+# Validation settings
+wireshark_validate_installation: true
+wireshark_service_timeout: 30

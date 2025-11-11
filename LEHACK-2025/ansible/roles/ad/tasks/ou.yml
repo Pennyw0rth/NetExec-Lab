@@ -1,0 +1,5 @@
+- name: Create Organizational Units
+  microsoft.ad.ou:
+    name: "{{ item.key }}"
+    path: "{{ item.value.path }}"
+  loop: "{{ ad_ou | dict2items }}"

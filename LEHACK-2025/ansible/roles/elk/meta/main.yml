@@ -1,0 +1,23 @@
+---
+dependencies:
+  - role: geerlingguy.docker
+    version: "7.1.0" # ranges are not supported, newer versions are probably fine
+
+galaxy_info:
+  role_name: ludus_elastic_container
+  author: badsectorlabs
+  description: Install "The Elastic Container Project" to a debian system
+  company: Bad Sector Labs
+  license: Apache-2.0
+  min_ansible_version: "2.10"
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+        - bullseye
+  galaxy_tags:
+    - docker
+    - kibana
+    - elasticsearch
+    - fleet
+    - elasticcontainer

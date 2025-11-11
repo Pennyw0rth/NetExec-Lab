@@ -1,0 +1,21 @@
+- name: plant fakespool server
+  win_copy:
+    src: "{{ role_path }}/files/spoolserver.exe"
+    dest: C:\ProgramData\spoolserver.exe
+
+- name: start fakespool server
+  win_scheduled_task:
+    name: fakespool
+    description: "Fake Spooler"
+    actions:
+      - path: C:\ProgramData\spoolserver.exe
+    triggers:
+      - type: boot
+        delay: PT3M
+    username: SYSTEM
+    state: present
+    enabled: true
+    run_level: highest
+
+- name: reboot SYSTEM
+  win_reboot:

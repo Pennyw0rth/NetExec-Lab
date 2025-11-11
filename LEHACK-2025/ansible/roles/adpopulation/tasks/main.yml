@@ -1,0 +1,43 @@
+#- name: debug to see if it works
+#  debug:
+#    var: populate_ad_data_file
+
+- name: Validate that the data file exists
+  ansible.builtin.stat:
+    path: "{{ populate_ad_data_file }}"
+  register: data_file_check
+  delegate_to: localhost
+
+- name: Use the data file for population
+  ansible.builtin.debug:
+    msg: "Using data file: {{ populate_ad_data_file }}"
+
+- name: Populate Active Directory with Random Data
+  include_vars: "{{ populate_ad_data_file }}"
+
+#- name: Create OUs
+#  microsoft.ad.ou:
+#    name: "{{ item }}"
+#    state: present
+#  loop: "{{ ous }}"
+
+- name: Create groups
+  microsoft.ad.group:
+    name: "{{ item }}"
+    scope: Global
+    state: present
+  loop: "{{ ad_groups }}"
+  ignore_errors: yes
+
+- name: Create users
+  microsoft.ad.user:
+    firstname: "{{ item.first_name }}"
+    surname: "{{ item.last_name }}"
+    upn: "{{ item.username }}@{{ domain }}"
+    identity: "{{ item.username }}"
+    password: "{{ item.password }}" 
+    state: present
+    groups:
+      set:  "{{ item.ad_groups }}"
+    password_never_expires: true
+  loop: "{{ users }}"

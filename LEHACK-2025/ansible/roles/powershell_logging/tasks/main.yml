@@ -1,0 +1,60 @@
+---
+# PowerShell Script Block Logging Configuration
+# This role enables comprehensive PowerShell logging for threat detection
+
+- name: Enable PowerShell Script Block Logging
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging
+    name: EnableScriptBlockLogging
+    data: "{{ enable_script_block_logging | int }}"
+    type: dword
+    state: present
+  when: enable_script_block_logging | default(true)
+
+- name: Enable PowerShell Module Logging
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ModuleLogging
+    name: EnableModuleLogging
+    data: "{{ enable_module_logging | int }}"
+    type: dword
+    state: present
+  when: enable_module_logging | default(true)
+
+- name: Configure PowerShell Module Names for Logging (All Modules)
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ModuleLogging\ModuleNames
+    name: "*"
+    data: "{{ module_names_to_log }}"
+    type: string
+    state: present
+  when: enable_module_logging | default(true)
+
+- name: Enable PowerShell Transcription
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\Transcription
+    name: EnableTranscripting
+    data: "{{ enable_transcription | int }}"
+    type: dword
+    state: present
+  when: enable_transcription | default(true)
+
+- name: Set PowerShell Transcription Output Directory
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\Transcription
+    name: OutputDirectory
+    data: "{{ transcription_output_directory }}"
+    type: string
+    state: present
+  when: enable_transcription | default(true)
+
+- name: Enable PowerShell Transcription Include Invocation Headers
+  ansible.windows.win_regedit:
+    path: HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\Transcription
+    name: EnableInvocationHeader
+    data: "{{ enable_invocation_header | int }}"
+    type: dword
+    state: present
+  when: enable_transcription | default(true)
+
+
+# Note: WinRM restart scheduled for 2 minutes after PowerShell logging configuration

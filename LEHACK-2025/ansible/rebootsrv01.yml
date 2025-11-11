@@ -1,0 +1,7 @@
+- name: "Reboot srv01 autologon"
+  hosts: srv01
+  tasks:
+    - name: "reboot"
+      win_reboot:
+        reboot_timeout: 1000
+        post_reboot_delay: 200

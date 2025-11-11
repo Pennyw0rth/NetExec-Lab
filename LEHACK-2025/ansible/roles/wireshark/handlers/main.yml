@@ -1,0 +1,6 @@
+---
+- name: Restart Windows Explorer
+  ansible.windows.win_shell: |
+    Stop-Process -Name explorer -Force
+    Start-Process explorer
+  ignore_errors: true

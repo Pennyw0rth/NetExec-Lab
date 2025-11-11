@@ -1,0 +1,21 @@
+---
+dependencies: []
+
+galaxy_info:
+  author: Security Team
+  description: Installs Wireshark network protocol analyzer on Windows hosts
+  company: Workshop
+  license: MIT
+  min_ansible_version: 2.9
+  platforms:
+    - name: Windows
+      versions:
+        - 2016
+        - 2019
+        - 2022
+  galaxy_tags:
+    - networking
+    - security
+    - wireshark
+    - analysis
+    - forensics

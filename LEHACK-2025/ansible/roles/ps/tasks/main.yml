@@ -1,0 +1,138 @@
+- name: Create empire users and grant ACLs (run as Administrator)
+  ansible.windows.win_powershell:
+    script: |
+      Import-Module ActiveDirectory
+      Set-Location AD:
+
+      $domain = "empire.local"
+      $ou = "CN=Users,DC=empire,DC=local"  # Default container
+
+      function New-RandomPassword {
+          Add-Type -AssemblyName System.Web
+          return [System.Web.Security.Membership]::GeneratePassword(12, 2)
+      }
+
+      $empireUsers = @(
+          "tarkin","vader","palpatine","krennic","thrawn","piett","kaiser",
+          "veers","snow","jerjerrod","snoke","grievoussssss","windu","maul",
+          "dooku","rex","fett","sidious","hux","phasma"
+      )
+
+      foreach ($name in $empireUsers) {
+          $samAccountName = $name.ToLower()
+          $displayName = $name.Substring(0,1).ToUpper() + $name.Substring(1)
+          $password = ConvertTo-SecureString (New-RandomPassword) -AsPlainText -Force
+
+          if (-not (Get-ADUser -Filter { SamAccountName -eq $samAccountName } -ErrorAction SilentlyContinue)) {
+              New-ADUser -Name $displayName `
+                         -GivenName $displayName `
+                         -SamAccountName $samAccountName `
+                         -UserPrincipalName "$samAccountName@$domain" `
+                         -AccountPassword $password `
+                         -Enabled $true `
+                         -Path $ou `
+                         -ChangePasswordAtLogon $false
+              Write-Host "Created user $displayName"
+          } else {
+              Write-Host "User $samAccountName exists"
+          }
+      }
+
+      # Create stormtrooper users with IDs
+      $ids = @(2100..2149 + 2187..2236)
+      foreach ($id in $ids) {
+          $samAccountName = "fn$id"
+          if (-not (Get-ADUser -Filter { SamAccountName -eq $samAccountName } -ErrorAction SilentlyContinue)) {
+              $plainPassword = [System.Web.Security.Membership]::GeneratePassword(12, 2)
+              $securePassword = ConvertTo-SecureString $plainPassword -AsPlainText -Force
+              $displayName = "Stormtrooper FN-$id"
+              New-ADUser -Name $displayName `
+                         -GivenName "Stormtrooper" `
+                         -Surname "FN-$id" `
+                         -SamAccountName $samAccountName `
+                         -UserPrincipalName "$samAccountName@$domain" `
+                         -AccountPassword $securePassword `
+                         -Enabled $true `
+                         -Path $ou `
+                         -ChangePasswordAtLogon $false
+              Write-Host "Created $displayName"
+          } else {
+              Write-Host "User $samAccountName exists"
+          }
+      }
+
+      # Example modifications for specific users
+      Set-ADUser -Identity "krennic" -Add @{servicePrincipalName='HTTP/empire'} -ErrorAction SilentlyContinue
+      Get-ADUser -Identity "grievoussssss" -ErrorAction SilentlyContinue | ForEach-Object {
+        Set-ADAccountControl -Identity $_.DistinguishedName -DoesNotRequirePreAuth $true -ErrorAction SilentlyContinue
+      }
+
+      # set fixed passwords (idempotent)
+      if (Get-ADUser -Filter { SamAccountName -eq "krennic" } -ErrorAction SilentlyContinue) {
+        Set-ADAccountPassword -Identity krennic -Reset -NewPassword (ConvertTo-SecureString "liu8Sith" -AsPlainText -Force) -ErrorAction SilentlyContinue
+      }
+      if (Get-ADUser -Filter { SamAccountName -eq "fn2187" } -ErrorAction SilentlyContinue) {
+        Set-ADAccountPassword -Identity fn2187 -Reset -NewPassword (ConvertTo-SecureString "zHBsKN?^8KsJ" -AsPlainText -Force) -ErrorAction SilentlyContinue
+      }
+
+      # ---------------------------
+      # ACL: grant fn2187 ExtendedRight to change/reset vader password (idempotent)
+      # ---------------------------
+      $targetSam = "vader"
+      $granteeSam = "fn2187"
+      $pwdGuid = [Guid]"00299570-246d-11d0-a768-00aa006e0529"   # Extended right GUID for change/password
+      $adRight = [System.DirectoryServices.ActiveDirectoryRights]::ExtendedRight
+      $allow = [System.Security.AccessControl.AccessControlType]::Allow
+      $inherit = [System.DirectoryServices.ActiveDirectorySecurityInheritance]::None
+
+      $target = Get-ADUser -Identity $targetSam -ErrorAction Stop
+      $grantee = Get-ADUser -Identity $granteeSam -ErrorAction Stop
+
+      $targetEntry = [ADSI]("LDAP://{0}" -f $target.DistinguishedName)
+      $acl = $targetEntry.ObjectSecurity
+
+      # build identity ref (NTAccount)
+      $identityRef = New-Object System.Security.Principal.NTAccount($grantee.SamAccountName)
+
+      # Check existing ACEs to avoid duplicates
+      $exists = $false
+      foreach ($ace in $acl.GetAccessRules($true,$true,[System.Security.Principal.NTAccount])) {
+          if ($ace.IdentityReference -and ($ace.IdentityReference.Value -eq $identityRef.Value)) {
+              # for ExtendedRight the ObjectType holds the GUID; compare if present
+              if ($ace.ObjectType -and ($ace.ObjectType -eq $pwdGuid)) {
+                  $exists = $true
+                  break
+              }
+              # sometimes rights are stored differently; also allow matching on ActiveDirectoryRights+ExtendedRight
+              if ($ace.ActiveDirectoryRights -band $adRight) {
+                  $exists = $true
+                  break
+              }
+          }
+      }
+
+      if (-not $exists) {
+        $newAce = New-Object System.DirectoryServices.ActiveDirectoryAccessRule($identityRef, $adRight, $allow, $pwdGuid, $inherit)
+        $acl.AddAccessRule($newAce)
+        $targetEntry.ObjectSecurity = $acl
+        $targetEntry.CommitChanges()
+        Write-Host "Granted '$granteeSam' ExtendedRight to change/reset password on '$targetSam'"
+      } else {
+        Write-Host "ACE already present for $granteeSam on $targetSam"
+      }
+
+      # Grant 'vader' dcsync (if intended) - idempotent-ish (dsacls doesn't have an easy idempotent API)
+      $domainDN = (Get-ADDomain).DistinguishedName
+      dsacls $domainDN /G "vader:CA;Replicate Directory Changes" /G "vader:CA;Replicate Directory Changes All" | Out-Null
+
+      exit 0
+  vars:
+    ansible_become: yes
+    ansible_become_method: runas
+    ansible_become_user: "{{ domain_username }}"
+    ansible_become_password: "{{ domain_password }}"
+  register: ps_create_and_acl
+  ignore_errors: no
+
+- name: Play task {{ps_script}}
+  script: "{{ps_script}}"

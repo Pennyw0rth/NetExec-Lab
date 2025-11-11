@@ -1,0 +1,30 @@
+---
+# Load datas
+- import_playbook: data.yml
+  vars:
+    data_path: "../ad/{{domain_name}}/data/"
+  tags: 'data'
+
+- name: "Install IIS"
+  hosts: iis
+  roles:
+    - { role: 'iis', tags: 'iis'}
+
+- name: "Install MSSQL Express"
+  hosts: srv02
+  roles:
+    - { role: 'mssql_srv02', tags: 'mssql, mssql_link'}
+  vars:
+    domain: "{{lab.hosts[dict_key].domain}}"
+    SQLSVCACCOUNT_NAME: "{{lab.hosts[dict_key].mssql.svcaccount| default('NT AUTHORITY\\NETWORK SERVICE')}}"
+    SQLSVCACCOUNT_NAMEDOMAIN: "{{domain}}\\{{SQLSVCACCOUNT_NAME}}"
+    SQLSVCACCOUNT: "{{SQLSVCACCOUNT_NAME if SQLSVCACCOUNT_NAME == 'NT AUTHORITY\\NETWORK SERVICE' else SQLSVCACCOUNT_NAMEDOMAIN }}"
+    SQLSVCPASSWORD: "{{lab.domains[domain].users[SQLSVCACCOUNT_NAME].password| default('')}}"
+    SQLYSADMIN: "{{SQLSVCACCOUNT}}"
+    domain_admin: "{{domain}}\\Administrator"
+    domain_admin_password: "{{lab.domains[domain].domain_password}}"
+    sql_sysadmins: "{{lab.hosts[dict_key].mssql.sysadmins | default([]) }}"
+    executeaslogin: "{{lab.hosts[dict_key].mssql.executeaslogin  | default({}) }}"
+    executeasuser:  "{{lab.hosts[dict_key].mssql.executeasuser | default({}) }}"
+    sa_password: "{{lab.hosts[dict_key].mssql.sa_password}}"
+    linked_servers: "{{lab.hosts[dict_key].mssql.linked_servers | default({}) }}"

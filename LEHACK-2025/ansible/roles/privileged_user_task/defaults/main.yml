@@ -1,0 +1,25 @@
+---
+# Privileged User Task Role Defaults
+# Configuration for creating persistent domain admin processes
+
+# Default privileged user settings (can be overridden in playbook)
+privileged_username: "adm_asnyder"
+privileged_password: "5u8p19T1jVqkW6K"
+privileged_domain: "sandbox.pwnzone.lab"
+
+# Process persistence settings
+persistent_process_duration: 14400  # 4 hours in seconds
+persistent_process_name: "PersistentDomainAdminProcess"
+persistent_process_description: "Runs a persistent 4-hour process as a Domain Admin to ensure their hash and token are always available for workshop purposes (Pass-the-Hash, Token Impersonation)."
+
+# Scheduled task settings
+task_run_level: "highest"
+task_logon_type: "password"
+task_restart_on_failure: true
+task_restart_count: 3
+task_stop_if_going_on_batteries: false
+task_start_when_available: true
+
+# Timeout settings (critical for preventing early termination)
+task_execution_time_limit: "PT0S"  # No time limit (infinite)
+trigger_execution_time_limit: "PT0S"  # No time limit in trigger

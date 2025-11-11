@@ -1,0 +1,36 @@
+---
+# Load datas
+- import_playbook: data.yml
+  vars:
+    data_path: "../ad/{{domain_name}}/data/"
+  tags: 'data'
+
+# set AD datas ==================================================================================================
+
+# child
+- name: Child DC AD configuration
+  hosts: child_dc
+  roles:
+    - { role: 'child_domain', tags: 'child_domain'}
+    - { role: 'dns_conditional_forwarder', tags: 'dns_conditional_forwarder' }
+  vars:
+    domain: "{{lab.hosts[dict_key].domain}}"
+    domain_password: "{{lab.domains[domain].domain_password}}"
+    netbios_name: "{{lab.domains[domain].netbios_name}}"
+    parent_domain: "{{'.'.join(domain.split('.')[1:])}}"
+    parent_domain_password: "{{lab.domains[parent_domain].domain_password}}"
+    source_dc: "{{lab.hosts[lab.domains[parent_domain].dc].hostname}}.{{parent_domain}}"
+    zone_name: "{{parent_domain}}"
+    remote_dc: "{{lab.domains[parent_domain].dc}}"
+    master_server: "{{hostvars[remote_dc].ansible_host}}"
+    replication: "none"
+
+# parent add DNS value of child DC
+- name: Parent DC ADD DNS configuration
+  hosts: parent_dc
+  roles:
+    - { role: 'child_dns', tags: 'child_dns'}
+  vars:
+    lab: "{{lab}}"
+    domains: "{{lab.domains.keys()}}"
+    domain: "{{lab.hosts[dict_key].domain}}"

@@ -1,0 +1,40 @@
+---
+dependencies: []
+
+galaxy_info:
+  role_name: docker
+  author: geerlingguy
+  description: Docker for Linux.
+  company: "Midwestern Mac, LLC"
+  license: "license (BSD, MIT)"
+  min_ansible_version: 2.15.1
+  platforms:
+    - name: Fedora
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - buster
+        - bullseye
+        - bookworm
+        - trixie
+    - name: Ubuntu
+      versions:
+        - bionic
+        - focal
+        - jammy
+        - noble
+    - name: Alpine
+      version:
+        - all
+    - name: ArchLinux
+      versions:
+        - all
+  galaxy_tags:
+    - web
+    - system
+    - containers
+    - docker
+    - orchestration
+    - compose
+    - server

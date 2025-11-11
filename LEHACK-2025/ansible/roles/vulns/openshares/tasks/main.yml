@@ -1,0 +1,38 @@
+# SMB share users only
+#- name: Ensure directory structure for public share exists
+#  win_file:
+#    path: C:\shares\public
+#    state: directory
+
+#- name: Ensure public share exists
+#  win_share:
+#    name: public
+#    description: Basic Read share for all domain users
+#    path: C:\shares\public
+#    list: yes
+#    full: Administrators
+#    change: Users
+# allow anonymous on win10 (https://docs.microsoft.com/fr-fr/troubleshoot/windows-server/networking/guest-access-in-smb2-is-disabled-by-default)
+
+# SMB share users only
+#- name: Ensure directory structure for public share exists
+#  win_file:
+#    path: C:\shares\public
+#    state: directory
+
+#- name: Ensure public share exists
+#  win_share:
+#    name: public
+#    description: Basic Read share for all domain users
+#    path: C:\shares\public
+#    list: yes
+#    full: Administrators
+#    change: Users
+# allow anonymous on win10 (https://docs.microsoft.com/fr-fr/troubleshoot/windows-server/networking/guest-access-in-smb2-is-disabled-by-default)
+
+- name: Hello From here
+  ansible.windows.win_shell: |
+    Grant-SmbShareAccess -AccessRight Full -Name Destroyer_Access  -AccountName "REBELS\gMSA-scarif$" -Force
+
+
+

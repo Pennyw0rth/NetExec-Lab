@@ -1,0 +1,20 @@
+- name: Get ELK server IP from inventory
+  ansible.builtin.set_fact:
+    elk_server: elk
+    elk_ip: "{{ hostvars['elk'].ansible_host | default('elk') }}"
+
+- name: Read enrollment token from ELK server
+  ansible.builtin.slurp:
+    path: "{{ ludus_elastic_container_install_path }}/enrollment_token.txt"
+  register: token_slurp
+  delegate_to: "{{ elk_server }}"
+
+- name: Fail if token file not found
+  ansible.builtin.fail:
+    msg: "Could not read enrollment token from {{ elk_server }} ({{ elk_ip }})"
+  when: token_slurp is failed
+
+- name: Set token fact
+  ansible.builtin.set_fact:
+    ludus_elastic_enrollment_token: "{{ token_slurp.content | b64decode }}"
+    ludus_elastic_fleet_server: "https://{{ elk_ip }}:8220"

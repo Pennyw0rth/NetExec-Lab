@@ -1,0 +1,117 @@
+---
+- name: Create temp directory for Wireshark installer
+  ansible.windows.win_file:
+    path: C:\temp
+    state: directory
+  tags:
+    - wireshark
+    - setup
+
+- name: Check if Wireshark is already installed
+  ansible.windows.win_stat:
+    path: "{{ wireshark_install_dir }}\\Wireshark.exe"
+  register: wireshark_installed
+  tags:
+    - wireshark
+    - check
+
+- name: Download Wireshark installer
+  ansible.windows.win_get_url:
+    url: "{{ wireshark_installer_url }}"
+    dest: "{{ wireshark_installer_path }}"
+    timeout: 300
+    force: no
+  when: not wireshark_installed.stat.exists
+  register: wireshark_download
+  retries: 3
+  delay: 10
+  tags:
+    - wireshark
+    - download
+
+- name: Install Wireshark silently
+  ansible.windows.win_command: >
+    "{{ wireshark_installer_path }}" /S
+    {% if wireshark_install_npcap %}/NCRC{% endif %}
+    {% if not wireshark_install_usb_capture %}/NOUSB{% endif %}
+  when: not wireshark_installed.stat.exists and wireshark_download is succeeded
+  register: wireshark_install_result
+  changed_when: wireshark_install_result.rc == 0
+  failed_when: wireshark_install_result.rc != 0
+  tags:
+    - wireshark
+    - install
+
+- name: Wait for installation to complete
+  ansible.windows.win_wait_for:
+    path: "{{ wireshark_install_dir }}\\Wireshark.exe"
+    timeout: "{{ wireshark_service_timeout }}"
+  when: wireshark_install_result is changed
+  tags:
+    - wireshark
+    - install
+
+- name: Validate Wireshark installation
+  ansible.windows.win_command: '"{{ wireshark_install_dir }}\Wireshark.exe" -v'
+  register: wireshark_version_check
+  changed_when: false
+  failed_when: wireshark_version_check.rc != 0
+  when: wireshark_validate_installation
+  tags:
+    - wireshark
+    - validate
+
+- name: Create desktop shortcut using PowerShell
+  ansible.windows.win_powershell:
+    script: |
+      $WshShell = New-Object -comObject WScript.Shell
+      $Shortcut = $WshShell.CreateShortcut("C:\Users\Public\Desktop\Wireshark.lnk")
+      $Shortcut.TargetPath = "{{ wireshark_install_dir }}\Wireshark.exe"
+      $Shortcut.Description = "Wireshark Network Protocol Analyzer"
+      $Shortcut.IconLocation = "{{ wireshark_install_dir }}\Wireshark.exe,0"
+      $Shortcut.Save()
+  when: wireshark_create_desktop_shortcut
+  tags:
+    - wireshark
+    - shortcuts
+
+- name: Add Wireshark to system PATH
+  ansible.windows.win_path:
+    elements:
+      - "{{ wireshark_install_dir }}"
+    state: present
+    scope: machine
+  tags:
+    - wireshark
+    - path
+
+- name: Clean up installer file
+  ansible.windows.win_file:
+    path: "{{ wireshark_installer_path }}"
+    state: absent
+  when: wireshark_download is succeeded
+  tags:
+    - wireshark
+    - cleanup
+
+- name: Display installation status
+  ansible.windows.win_powershell:
+    script: |
+      $wiresharkPath = "{{ wireshark_install_dir }}\Wireshark.exe"
+      if (Test-Path $wiresharkPath) {
+        $version = & $wiresharkPath -v 2>$null | Select-String "Wireshark" | Select-Object -First 1
+        Write-Output "Wireshark installed successfully: $version"
+      } else {
+        Write-Output "Wireshark installation verification failed"
+      }
+  register: installation_status
+  tags:
+    - wireshark
+    - info
+
+- name: Show installation result
+  debug:
+    msg: "{{ installation_status.output[0] if installation_status.output else 'Installation status unknown' }}"
+  tags:
+    - wireshark
+    - info

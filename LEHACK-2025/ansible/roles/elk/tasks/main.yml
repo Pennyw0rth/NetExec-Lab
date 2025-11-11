@@ -1,0 +1,67 @@
+---
+- name: Gather facts
+  ansible.builtin.setup:
+
+- name: Ensure Docker is installed
+  block:
+    - name: Check if Docker is installed
+      ansible.builtin.command: which docker
+      register: docker_installed
+      ignore_errors: true
+      changed_when: false
+
+    - name: Install Docker if not installed
+      ansible.builtin.package:
+        name: docker
+        state: present
+      when: docker_installed.rc != 0
+
+    - name: Ensure Docker service is running
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+- name: Install required packages
+  ansible.builtin.package:
+    name: "{{ pkg }}"
+    state: present
+  loop:
+    - git
+    - python3
+    - python3-pip
+    - curl
+    - jq
+  loop_control:
+    loop_var: pkg
+
+- name: Check if elastic_container was already installed here
+  ansible.builtin.stat:
+    path: "{{ ludus_elastic_container_install_path }}/docker-compose.yml"
+  register: elastic_container_installed
+
+- name: Check Docker health status
+  ansible.builtin.shell:
+    cmd: >-
+      docker ps --format '{{ "{{" }}json .{{ "}}" }}' |
+      jq -r 'select(.Status | test("Up") | not) | .Names'
+  register: docker_health_check
+  changed_when: false
+  failed_when:
+    - docker_health_check.rc != 0
+    - docker_health_check.stdout | length > 0
+  args:
+    executable: /bin/bash
+
+- name: Check that the enrollment_token was created
+  ansible.builtin.stat:
+    path: "{{ ludus_elastic_container_install_path }}/enrollment_token.txt"
+  register: enrollment_token_exists
+
+- name: Only install if containers are unhealthy or token is missing
+  ansible.builtin.include_tasks:
+    file: install.yml
+  when: |-
+    not elastic_container_installed.stat.exists
+    or docker_health_check.stdout | trim | length > 0
+    or not enrollment_token_exists.stat.exists

@@ -1,0 +1,4 @@
+domain_name: treasureisland.lab
+domain_admin_password: AnsibleAutomation123!
+parent_domain_name: pwnzone.lab
+safe_mode_password: SuperSecretSafeModePasswordForTheWin!?

@@ -1,0 +1,22 @@
+- name: Change to the correct hostname
+  win_hostname:
+    name: "treasure-dc01"
+  register: result
+
+- name: reboot if hostname changed
+  win_reboot:
+  when: result.reboot_required
+
+- name: Create tree-root domain trust - WARNING takes a long time, chill!
+  microsoft.ad.domain_child:
+    dns_domain_name: "{{ domain_name }}"
+    domain_admin_password: "{{ domain_admin_password }}"
+    domain_admin_user: "administrator@{{ parent_domain_name }}"
+    domain_type: tree
+    parent_domain_name: "{{ parent_domain_name }}"
+    install_dns: true
+    safe_mode_password: "{{ safe_mode_password }}"
+    reboot: true 
+  register: tree_root_domain_result
+  retries: 2
+  delay: 60

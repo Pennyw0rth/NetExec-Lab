@@ -1,0 +1,47 @@
+- name: Enable the SA login
+  win_shell: |
+    SqlCmd -E -Q "ALTER LOGIN [sa] ENABLE;"
+
+- name: Set SA password
+  win_shell: |
+    SqlCmd -E -Q "ALTER LOGIN [sa] WITH PASSWORD = 'YourStrongPasswordHere!';"
+
+- name: Create linked server DANTOOINE if not exists
+  win_shell: |
+    SqlCmd -E -Q "
+    IF NOT EXISTS (SELECT 1 FROM sys.servers WHERE name = N'DANTOOINE')
+    BEGIN
+        EXEC sp_addlinkedserver 
+            @server     = N'DANTOOINE',
+            @srvproduct = N'',
+            @provider   = N'MSOLEDBSQL',
+            @datasrc    = N'DANTOOINE\SQLEXPRESS';
+    END
+    "
+
+- name: Configure linked server login for DANTOINE
+  win_shell: |
+    SqlCmd -E -Q "
+    EXEC sp_addlinkedsrvlogin 
+        @rmtsrvname  = N'DANTOOINE',
+        @useself     = N'false',
+        @locallogin  = NULL,
+        @rmtuser     = N'droideka',
+        @rmtpassword = N'YourStrongPasswordHere!';
+    "
+
+- name: Enable RPC and RPC Out on linked server DANTOINE
+  win_shell: |
+    SqlCmd -E -Q "
+    EXEC sp_serveroption @server = N'DANTOINE', @optname = N'rpc',     @optvalue = N'true';
+    EXEC sp_serveroption @server = N'DANTOINE', @optname = N'rpc out', @optvalue = N'true';
+    "
+
+- name: Enable advanced options and xp_cmdshell
+  win_shell: |
+    SqlCmd -E -Q "
+    EXEC master.dbo.sp_configure 'show advanced options', 1;
+    RECONFIGURE;
+    EXEC master.dbo.sp_configure 'xp_cmdshell', 1;
+    RECONFIGURE;
+    "
