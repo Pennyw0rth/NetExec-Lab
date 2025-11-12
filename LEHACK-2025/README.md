@@ -1,7 +1,7 @@
 # lehack CTF 2025 
 
 <div>
-<img src="./lehack.jpg"/>
+<img src="./lehack2025.png"/>
 </div>
 
 Welcome to the NetExec Active Directory Lab! This lab is designed to teach you how to exploit Active Directory (AD) environments using the powerful tool NetExec.
