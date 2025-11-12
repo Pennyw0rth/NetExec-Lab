@@ -12,6 +12,8 @@ The ultimate goal? Become Domain Administrator by following various attack paths
 
 Obviously do not cheat by looking at the passwords and flags in the recipe files, the lab must start without user to full compromise.
 
+> In the vast digital galaxy of Star Wars, strange whispers travel through the networks of both the Empire and the Rebellion. Someone — a spy — is playing both sides. Your mission: dive deep into two interconnected Active Directory environments, follow the trails through users, trusts, and hidden permissions, and unmask the traitor before it’s too late. Use your wits to explore, escalate, and uncover the truth hidden within the galaxy. The fate of the galaxy’s secrets rests in your hands.
+
 ### Public Writeups
 
 - [https://blog.anh4ckin.ch/posts/netexec-workshop2k25/] by [Anh4ckin3]
