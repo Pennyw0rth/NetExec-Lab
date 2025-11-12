@@ -115,15 +115,15 @@ vagrant up
 ### Run the Main Playbook:
 ```bash
 cd ../../../../ansible/
-ansible-playbook -i ../ad/LEHACK/data/inventory -i ../ad/LEHACK/providers/virtualbox/inventory main.yml
+ansible-playbook -i ../ad/LEHACK/data/inventory -i ../ad/LEHACK/providers/virtualbox/inventory.yml main.yml
 ```
 ### Disable Vagrant user:
 ```bash
-ansible-playbook -i ../ad/LEHACK/providers/virtualbox/inventory_disablevagrant disable_vagrant.yml
+ansible-playbook -i ../ad/LEHACK/providers/virtualbox/inventory_disablevagrant.yml disable_vagrant.yml
 ```
 ### Reboot the Machines:
 ```bash
-ansible-playbook -i ../ad/LEHACK/providers/virtualbox/inventory_disablevagrant reboot.yml rebootsrv01.yml
+ansible-playbook -i ../ad/LEHACK/providers/virtualbox/inventory_disablevagrant.yml reboot.yml rebootsrv01.yml
 ```
 
 
