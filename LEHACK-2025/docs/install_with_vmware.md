@@ -129,7 +129,7 @@ vagrant plugin install winrm-elevated
 
 ```bash
 cd ansible
-export ANSIBLE_COMMAND="ansible-playbook -i ../ad/LEHACK/data/inventory -i ../ad/LEHACK/providers/vmware/inventory"
+export ANSIBLE_COMMAND="ansible-playbook -i ../ad/LEHACK/data/inventory -i ../ad/LEHACK/providers/vmware/inventory.yml"
 export LAB="LEHACK"
 ../scripts/provisionning.sh
 ```
@@ -138,18 +138,18 @@ export LAB="LEHACK"
 
 ```bash
 cd ansible/
-ansible-playbook -i ../ad/LEHACK/data/inventory -i ../ad/LEHACK/providers/vmware/inventory main.yml
+ansible-playbook -i ../ad/LEHACK/data/inventory -i ../ad/LEHACK/providers/vmware/inventory.yml main.yml
 ```
 ### Once install has finished disable vagrant user to avoid using it
 
 ```bash
 cd ansible/
-ansible-playbook -i ../ad/LEHACK/providers/vmware/inventory_disablevagrant disable_vagrant.yml
+ansible-playbook -i ../ad/LEHACK/providers/vmware/inventory_disablevagrant.yml disable_vagrant.yml
 ```
 
 ### Now do a reboot of all the machines to avoid unintended secrets stored / am looking at you Lsassy
 
 ```bash
 cd ansible/
-ansible-playbook -i ../ad/LEHACK/providers/vmware/inventory_disablevagrant reboot.yml rebootsrv01.yml
+ansible-playbook -i ../ad/LEHACK/providers/vmware/inventory_disablevagrant.yml reboot.yml rebootsrv01.yml
 ```
