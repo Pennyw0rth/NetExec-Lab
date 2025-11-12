@@ -18,9 +18,6 @@ Obviously do not cheat by looking at the passwords and flags in the recipe files
 
 - [https://blog.anh4ckin.ch/posts/netexec-workshop2k25/] by [Anh4ckin3]
 
-There is 13 flags to find in this lab !
-
-
 ## Install dependencies
 
 > No automatic install is provided as it depend of your package manager and distribution. Here are some install command lines are given for ubuntu.
