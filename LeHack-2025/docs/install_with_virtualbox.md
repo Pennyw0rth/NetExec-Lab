@@ -87,7 +87,7 @@ ansible-galaxy install -r ansible/requirements.yml
 ```bash
 sudo apt install git
 git clone https://github.com/Pennyw0rth/NetExec-Lab
-cd LEHACK-2025/ansible
+cd LeHack-2025/ansible
 sudo apt install python3.8-venv
 python3.8 -m virtualenv .venv
 source .venv/bin/activate
