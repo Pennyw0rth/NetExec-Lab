@@ -78,7 +78,7 @@ sudo make altinstall
 ## Step 8: Set Up Python Virtual Environment
 
 ```bash
-cd /tmp/NetExec-Lab/LEHACK-2025/
+cd /tmp/NetExec-Lab/LeHack-2025/
 python3.8 -m venv .venv
 source .venv/bin/activate  # For bash/zsh
 # OR

@@ -57,7 +57,7 @@ ludus templates list
 
 ```bash
 git clone https://github.com/Pennyw0rth/NetExec-Lab
-ludus range config set -f NetExec-Lab/LEHACK-2025/ad/LEHACK/providers/ludus/config.yml
+ludus range config set -f NetExec-Lab/LeHack-2025/ad/LEHACK/providers/ludus/config.yml
 ludus range deploy
 # Wait for the range to successfully deploy
 # You can watch the logs with `ludus range logs -f`
@@ -74,7 +74,7 @@ Install ansible and its requirements for the NetExec lab on your local machine.
 python3 -m pip install ansible-core
 python3 -m pip install pywinrm
 git clone https://github.com/Pennyw0rth/NetExec-Lab
-cd LEHACK-2025/ansible
+cd LeHack-2025/ansible
 ansible-galaxy install -r requirements.yml
 ```
 
@@ -83,7 +83,7 @@ ansible-galaxy install -r requirements.yml
 The inventory file is already present in the providers folder and replace RANGENUMBER with your range number with sed (commands provided below)
 
 ```bash
-cd LEHACK-2025/ansible
+cd LeHack-2025/ansible
 export RANGENUMBER=$(ludus range list --json | jq '.rangeNumber')
 sed -i "s/RANGENUMBER/$RANGENUMBER/g" ../ad/LEHACK/providers/ludus/inventory.yml
 sed -i "s/RANGENUMBER/$RANGENUMBER/g" ../ad/LEHACK/providers/ludus/inventory_disableludus.yml
@@ -98,7 +98,7 @@ If not running on the Ludus host, you must be connected to your Ludus wireguard 
 :::
 
 ```bash
-cd LEHACK-2025/ansible
+cd LeHack-2025/ansible
 export ANSIBLE_COMMAND="ansible-playbook -i ../ad/LEHACK/data/inventory -i ../ad/LEHACK/providers/ludus/inventory.yml"
 export LAB="LEHACK"
 chmod +x ../scripts/provisionning.sh
@@ -125,7 +125,7 @@ You must be connected to your Ludus wireguard VPN for these commands to work
 :::
 
 ```bash
-# Still in the LEHACK-2025/ansible directory
+# Still in the LeHack-2025/ansible directory
 ansible-playbook -i ../ad/LEHACK/providers/ludus/inventory_disableludus.yml disable_localuser.yml reboot.yml rebootsrv01.yml
 ```
 
