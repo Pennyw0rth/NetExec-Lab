@@ -9,7 +9,7 @@ A link to a write-up is also available in the README of each folder.
 
 We hope you enjoy this resource and that **it helps the community enhance their skills in Active Directory pentesting**.
 
-**Note**: The following labs are related only to the usage of NetExec and nsome other tools (BloodHound, ntlmrelayx etc).
+**Note**: The following labs are related only to the usage of NetExec and some other tools (BloodHound, ntlmrelayx etc).
 
 Have fun !
 
