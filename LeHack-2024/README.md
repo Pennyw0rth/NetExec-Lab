@@ -33,6 +33,7 @@ Submit a PR to add your writeup to this list :)
 ## Installation
 
 - Installation depend of the provider you use, please follow the appropriate guide :
+  - [Install with Ludus](./docs/install_with_ludus.md)
   - [Install with VmWare](./docs/install_with_vmware.md)
   - [Install with VirtualBox](./docs/install_with_virtualbox.md)
 
