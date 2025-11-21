@@ -26,7 +26,7 @@
             "srv01": {
                 "hostname": "mustafar",
                 "type": "server",
-                "local_admin_password": "TjhgkbVXSx9rk",
+                "local_admin_password": "TjhgkbVXSx9rk1",
                 "domain": "empire.local",
                 "path": "DC=empire,DC=local",
                 "local_groups": {
@@ -72,7 +72,7 @@
             "dc02": {
                 "hostname": "jedha",
                 "type": "dc",
-                "local_admin_password": "TjhgkbVXSx9rk",
+                "local_admin_password": "TjhgkbVXSx9rk2",
                 "domain": "rebels.local",
                 "path": "DC=rebels,DC=local",
                 "local_groups": {
@@ -84,7 +84,7 @@
             "srv02": {
                 "hostname": "dantooine",
                 "type": "server",
-                "local_admin_password": "TjhgkbVXSx9rk",
+                "local_admin_password": "TjhgkbVXSx9rk3",
                 "domain": "rebels.local",
                 "path": "DC=rebels,DC=local",
                 "local_groups": {
@@ -152,7 +152,7 @@
             },
             "rebels.local": {
                 "dc": "dc02",
-                "domain_password": "TjhgkbVXSx9rk",
+                "domain_password": "TjhgkbVXSx9rk2",
                 "netbios_name": "REBELS",
                 "gmsa": {
                     "gmsa_account": {
