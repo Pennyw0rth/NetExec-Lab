@@ -16,7 +16,8 @@ Obviously do not cheat by looking at the passwords and flags in the recipe files
 
 ### Public Writeups
 
-- [https://blog.anh4ckin.ch/posts/netexec-workshop2k25/] by [Anh4ckin3]
+- https://blog.anh4ckin.ch/posts/netexec-workshop2k25/ by [Anh4ckin3]
+- https://www.notion.so/mr-stark/LeHACK2025-CTF-2ac79e9ad7c9800ebc46c7e2b056a67d by mr-stark
 
 ## Install dependencies
 
