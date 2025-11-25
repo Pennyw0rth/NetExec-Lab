@@ -1,0 +1,66 @@
+---
+config:
+  theme: redux
+  themeVariables:
+    primaryColor: '#fff'
+    edgeLabelBackground: '#fff'
+    tertiaryColor: '#fff'
+  look: handDrawn
+  layout: dagre
+---
+flowchart TB
+ subgraph Rome_Domain["🟥 ROME.LOCAL"]
+        Babaorum("🏛️ Babaorum<br>(Domain Controller)")
+        Metronum("🏰 Metronum<br>(FTP / Local Admin)")
+        Referendum("📜 Referendum<br>(LAPS / Azure AD Sync)")
+        MSOL_User("👤 User: MSOL_xxxx<br>(DCSync Rights)")
+        musculus("👤 User: musculus<br>(Local Admin)")
+        lapsus("👤 User: lapsus<br>(Read LAPS)")
+        heftepix("👤 User: heftepix<br>(FTP Access)")
+        localhix("👤 User: localix<br>(Local Admin)")
+        Guest("👤 User: Guest<br>(Guest User)")
+  end
+ subgraph Armorique_Domain["🌲 ARMORIQUE.LOCAL"]
+        Village("🏘️ Village<br>(Domain Controller)")
+        User_Prolix("👤 User: Prolix<br>(Compromised via Spray)")
+        User_Alambix("👤 User: Alambix<br>(Read gMSA)")
+        gMSA_Obelix("⚙️ gMSA-Obelix$<br>(DCSync Rights)")
+  end
+    Guest -- "1. SMB Guest (Share)<br>Found: 'heftepix' creds" --> Babaorum
+    Babaorum -- "2. FTP Login heftepix<br>" --> heftepix
+    heftepix -- "3. Found: 'plans.txt' with a password" --> localhix
+    Guest -- "4. Rid Brute on Metronum <br>Found: 'localix' account" --> localhix
+    localhix -- "5. Dump LSASS" --> Metronum
+    Metronum -- "6. Found musculus" --> musculus
+    musculus -- "7. Dump DPAPI" --> Metronum
+    Metronum -- "8. Found lapsus" --> lapsus
+    lapsus -- "9. Local admin" --> Referendum
+    Referendum -- "10. Dump MSOL Password<br>(Azure AD Connect)" --> MSOL_User
+    MSOL_User == "11. DCSync Rome<br>(Dump NTDS)" ==> Babaorum
+    Babaorum -- "12. Cross-Domain Hash Spray<br>Rome Hashes -&gt; Armorique Users" --> User_Prolix
+    User_Prolix -- "13. Kerberoast<br>Crack: 'Alambix'" --> User_Alambix
+    User_Alambix -- "14. Read gMSA Password<br>Target: gMSA-Obelix$" --> gMSA_Obelix
+    gMSA_Obelix == "15. DCSync Armorique<br>(Game Over)" ==> Village
+
+     Babaorum:::romead
+     Metronum:::rome
+     Referendum:::rome
+     MSOL_User:::loot
+     musculus:::loot
+     lapsus:::loot
+     heftepix:::loot
+     localhix:::loot
+     Guest:::loot
+     Village:::armorique
+     User_Prolix:::loot
+     User_Alambix:::loot
+     gMSA_Obelix:::loot
+    classDef attacker fill:#fab1a0,stroke:#333,stroke-width:2px
+    classDef rome fill:#ffcccc,stroke:#e74c3c,stroke-width:2px
+    classDef romead fill:#d1ccc0,stroke:#e74c3c,stroke-width:2px
+    classDef armorique fill:#d1ccc0,stroke:#27ae60,stroke-width:2px
+    classDef loot fill:#f9ca24,stroke:#f1c40f,stroke-width:2px,stroke-dasharray: 5 5
+    style Armorique_Domain fill:#C8E6C9
+    linkStyle 10 stroke:#D50000,fill:none
+    linkStyle 11 stroke:#000000,fill:none
+    linkStyle 14 stroke:#D50000,fill:none
