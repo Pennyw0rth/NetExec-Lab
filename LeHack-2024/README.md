@@ -14,10 +14,11 @@ Obviously do not cheat by looking at the passwords and flags in the recipe files
 
 **Note**: One change has been made on this lab regarding the workshop, the part using msol module on nxc is replaced with a dump of lsass. The rest is identical.
 
-<img width="3761" height="1704" alt="lehack2024-2025-11-24-224509" src="https://github.com/user-attachments/assets/7b220034-f55f-4f97-8332-54900aa9a4a3" />
 
+<img width="2105" height="2767" alt="lehack2024-2025-11-25-111226" src="https://github.com/user-attachments/assets/ead11eae-e569-4f93-99d3-fd96bec0b044" />
 
 ### Original pitch
+
 
 The Gallic camp was attacked by the Romans and it seems that a traitor made this attack possible! Two domains must be compromised to find it 🔥
 
