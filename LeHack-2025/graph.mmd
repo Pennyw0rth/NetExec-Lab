@@ -1,0 +1,61 @@
+---
+config:
+  theme: base
+  themeVariables:
+    primaryColor: '#ffcccc'
+    edgeLabelBackground: '#fff'
+    tertiaryColor: '#fff'
+  look: handDrawn
+  layout: elk
+---
+flowchart TB
+ subgraph Empire_Local["🟥 DOMAIN: EMPIRE.LOCAL"]
+        Mustafar("🖥️ Mustafar<br>(MSSQL / NLA Disabled)")
+        Coruscant("🏰 Coruscant<br>(Domain Controller)")
+        Grievousssss("👤 User: Grievousssss<br>(Asrep)")
+        Krennic("👤 User: Krennic<br>(MSSQL Access)")
+        droideka("👤 User: droideka<br>(Local MSSQL user)")
+        fn2187("👤 User: fn2187<br>(Spy)")
+        vader("👤 User: vader<br>(DCSync Rights)")
+  end
+ subgraph Rebels_Local["🟧 DOMAIN: REBELS.LOCAL"]
+        Dantooine("🖥️ Dantooine<br>(SQL Server)")
+        Jedha("🏰 Jedha<br>(Domain Controller)")
+        Endor("🖥️ Endor<br>(Read gMSA)")
+        gMSA-scarif("⚙️ gMSA-scarif<br>(Read share)")
+        Poe("👤 User: Poe<br>(Certificate auth)")
+        obiwan("👤 User: obiwan<br>(Backup Operator)")
+  end
+    Mustafar -- "1. NLA Screenshot<br>Finds: grievousssssss" --> Grievousssss
+    Grievousssss -- "2. No-PreAuth Kerberoast<br>Cracked: 'krennic'" --> Krennic
+    Krennic -- "3. Auth as 'krennic'<br>Enum MSSQL user" --> Mustafar
+    Mustafar -- "4. Login = password for MSSQL droideka" --> droideka
+    droideka -- "5. Auth as 'droideka'<br>MSSQL Trust Link" --> Dantooine
+    Dantooine -- "6. Pre-2000 Abuse<br>User: endor$ / Pass: endor" --> Endor
+    Endor -- "7. Read gMSA Password<br>Target: gMSA-scarif$" --> gMSA-scarif
+    gMSA-scarif -- "8. SMB Spidering<br>Found: poe.pfx" --> Poe
+    Poe -- "9. Auth as 'poe' (PFX)<br>Dump Notepad++" --> Dantooine
+    gMSA-scarif -- "10. Enum domain user<br>Found obiwan" --> obiwan
+    Dantooine -- "11. Spray password" --> obiwan
+    obiwan -- "12. Backup Operator (obiwan)<br>Dump NTDS.dit" --> Jedha
+    Jedha -- "13. Hash Spraying<br>Match: fn2187" --> fn2187
+    fn2187 -- "14. ForceChangePassword<br>Target: vader (DCSync)" --> vader
+    vader -- "15. DCsync Coruscant" --> Coruscant
+
+     Mustafar:::target
+     Coruscant:::dc
+     Grievousssss:::loot
+     Krennic:::loot
+     droideka:::loot
+     fn2187:::loot
+     vader:::loot
+     Dantooine:::target
+     Jedha:::dc
+     Endor:::loot
+     gMSA-scarif:::loot
+     Poe:::loot
+     obiwan:::loot
+    classDef attacker fill:#fab1a0,stroke:#333,stroke-width:2px
+    classDef target fill:#ffcccc,stroke:#e74c3c,stroke-width:2px
+    classDef dc fill:#d1ccc0,stroke:#27ae60,stroke-width:2px
+    classDef loot fill:#f9ca24,stroke:#f1c40f,stroke-width:2px,stroke-dasharray: 5 5
