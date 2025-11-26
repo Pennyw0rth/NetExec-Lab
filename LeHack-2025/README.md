@@ -14,6 +14,9 @@ Obviously do not cheat by looking at the passwords and flags in the recipe files
 
 > In the vast digital galaxy of Star Wars, strange whispers travel through the networks of both the Empire and the Rebellion. Someone — a spy — is playing both sides. Your mission: dive deep into two interconnected Active Directory environments, follow the trails through users, trusts, and hidden permissions, and unmask the traitor before it’s too late. Use your wits to explore, escalate, and uncover the truth hidden within the galaxy. The fate of the galaxy’s secrets rests in your hands.
 
+<img width="2020" height="3063" alt="lehack2025-2025-11-26-153356" src="https://github.com/user-attachments/assets/7016f48e-9add-4e02-8d53-97b983b87188" />
+
+
 ### Public Writeups
 
 - https://blog.anh4ckin.ch/posts/netexec-workshop2k25/ by [Anh4ckin3]
