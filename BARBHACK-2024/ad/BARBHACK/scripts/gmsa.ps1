@@ -1,5 +1,4 @@
 Import-Module ActiveDirectory
-Enable-ADAccount -Identity "Guest"
 Get-ADUser -Identity "lucius.fox1337" | Set-ADAccountControl -DoesNotRequirePreAuth:$true
 Set-ADUser -Identity "joker" -ServicePrincipalNames @{Add='HTTP/batman'}
 Set-ADServiceAccount gmsa-robin -PrincipalsAllowedToRetrieveManagedPassword SRV01$
