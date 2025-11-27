@@ -8,6 +8,21 @@
 - name: WinScp for Robin
   hosts: srv02
   tasks:
-    - name: Winscp on SRV2
+    - name: Import WinSCP registry on SRV02
       ansible.windows.win_shell: |
         reg import C:\winscp.reg
+
+    - name: Create WinSCP shortcut on harley.quinn's desktop
+      ansible.windows.win_powershell:
+        script: |
+          $WshShell = New-Object -comObject WScript.Shell
+          $Shortcut = $WshShell.CreateShortcut("C:\Users\harley.quinn\Desktop\WinSCP.lnk")
+          $Shortcut.TargetPath = "C:\Program Files (x86)\WinSCP\WinSCP.exe"
+          $Shortcut.Description = "WinSCP - SFTP and FTP Client"
+          $Shortcut.IconLocation = "C:\Program Files (x86)\WinSCP\WinSCP.exe,0"
+          $Shortcut.Save()
+
+    - name: Remove winscp.reg file after import
+      ansible.windows.win_file:
+        path: C:\winscp.reg
+        state: absent
