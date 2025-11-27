@@ -10,7 +10,7 @@
                 "local_groups": {
                     "Administrators": []
                 },
-                "scripts": ["dcsync_vader.ps1", "empire.ps1", "rdp_scheduler.ps1" ],
+                "scripts": ["dcsync_vader.ps1", "empire.ps1", "rdp_scheduler.ps1", "rdp_scheduler_grievoussssss.ps1" ],
                 "vulns": ["disable_firewall" , "files" , "directory" ],
 				"vulns_vars" : {
 					"directory": {
@@ -20,7 +20,11 @@
                     "rdp" : {
                         "src" : "dc01/bot_rdp.ps1",
                         "dest" : "c:\\windows\\tasks\\bot_rdp.ps1"
-                    }	
+                    },
+                    "rdp_grievoussssss" : {
+                        "src" : "dc01/bot_rdp_grievoussssss.ps1",
+                        "dest" : "c:\\windows\\tasks\\bot_rdp_grievoussssss.ps1"
+                    }
 		}		}
             },
             "srv01": {
@@ -55,19 +59,7 @@
                         }
                     }
                 },
-                "vulns": ["disable_firewall", "autologon"],
-                "vulns_vars": {
-                    "autologon": {
-                        "krennic": {
-                            "username": "empire\\krennic",
-                            "password": "liu8Sith"
-                        },
-                        "grievoussssss": {
-                            "username": "empire\\grievoussssss",
-                            "password": "BNyuiuu456gfd"
-                        }
-                    }
-                }
+                "vulns": ["disable_firewall"]
             },
             "dc02": {
                 "hostname": "jedha",
