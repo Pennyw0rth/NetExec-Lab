@@ -1,0 +1,7 @@
+- name: "Reboot dc01 last for RDP connection"
+  hosts: dc01
+  tasks:
+    - name: "reboot"
+      win_reboot:
+        reboot_timeout: 1000
+        post_reboot_delay: 200

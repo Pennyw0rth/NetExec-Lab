@@ -70,3 +70,4 @@
 #- import_playbook: winscp.yml
 - import_playbook: reboot.yml
 - import_playbook: rebootsrv01.yml
+- import_playbook: rebootdc01.yml
