@@ -7,7 +7,7 @@ $action = New-ScheduledTaskAction -Execute "C:\Windows\System32\mstsc.exe" -Argu
 $trigger = New-ScheduledTaskTrigger -AtLogOn -User "EMPIRE\Administrator"
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
 
-$taskExists = Get-ScheduledTask | Where-Object {$_.TaskName -like $taskName }
+$taskExists = Get-ScheduledTask | Where-Object {$_.TaskName -eq $taskName }
 if($taskExists) {
     Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
 }
