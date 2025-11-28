@@ -10,18 +10,12 @@
                 "local_groups": {
                     "Administrators": []
                 },
-                "scripts": ["dcsync_vader.ps1", "empire.ps1", "rdp_scheduler.ps1" ],
-                "vulns": ["disable_firewall" , "files" , "directory", "autologon" ],
+                "scripts": ["dcsync_vader.ps1", "empire.ps1", "coruscant_nla.ps1" ],
+                "vulns": ["disable_firewall" , "directory", "autologon" ],
 				"vulns_vars" : {
 					"directory": {
                     "setup": "c:\\setup"
                 },
-					"files" : {
-                    "rdp" : {
-                        "src" : "dc01/bot_rdp.ps1",
-                        "dest" : "c:\\windows\\tasks\\bot_rdp.ps1"
-                    }	
-		},
                     "autologon": {
                         "krennic": {
                             "username": "empire\\krennic",
