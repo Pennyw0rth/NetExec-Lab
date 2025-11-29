@@ -108,6 +108,7 @@ esac
 # Final mission - reboot Rebel systems
 echo "[+] Imperial forces retreating! Rebooting Rebel systems to secure the base!"
 defend_gotham rebootsrv01.yml
+defend_gotham rebootdc01.yml
 echo "$BATMAN_VICTORY The galaxy is safe. The Sith have vanished into the void—for now."
 duration=$SECONDS
 echo "The Rebel Base was deployed in $((duration / 60)) minutes and $((duration % 60)) seconds."
