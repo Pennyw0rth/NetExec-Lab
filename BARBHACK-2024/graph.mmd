@@ -1,0 +1,57 @@
+---
+config:
+  theme: redux
+  themeVariables:
+    primaryColor: '#fff'
+    edgeLabelBackground: '#fff'
+    tertiaryColor: '#fff'
+  look: handDrawn
+  layout: elk
+---
+flowchart TB
+ subgraph Gotham_Domain["🦇 GOTHAM.CITY"]
+        DC01("🏛️ DC01<br>(Domain Controller)")
+        SRV01("🏢 SRV01<br>(File Server / WayneService)")
+        SRV02("🏢 SRV02<br>(Print Server)")
+        Guest("👤 User: Guest<br>(Anonymous Access)")
+        Lucius("👤 User: lucius.fox1337<br>(Target Info)")
+        Joker("👤 User: joker<br>(Compromised Password)")
+        Klemou("👤 User: nxc<br>(Created Local Admin)")
+        gMSA("⚙️ gMSA-robin$<br>(LSA Secret)")
+        Harley("👤 User: HARLEY.QUINN<br>(Compromised Account)")
+        Adm1n("👤 User: adm1n<br>(Created Local Admin)")
+        Harvey("👤 User: harvey.dent<br>(WinSCP Creds)")
+        Administrator("👤 User: Administrator<br>(Domain Admin)")
+  end
+    Guest -- "1. SMB Read 'CleanSlate'<br>Download cleanslate.exe" --> SRV01
+    SRV01 -- "2. Reverse Engineering<br>Found string: lucius.fox1337" --> Lucius
+    Lucius -- "3. Wordlist Gen &amp; Enum<br>Identified 'joker'" --> Joker
+    Joker -- "4. AS-REQ Roasting (No-PreAuth)<br>Crack Hash: &lt;3batman0893" --> Joker
+    Joker -- "5. RDP Access" --> SRV01
+    SRV01 -- "6. PrivEsc: DLL Hijacking<br>(WayneService / alfred.dll)" --> Klemou
+    Klemou -- "7. Dump LSA Secrets" --> gMSA
+    gMSA -- "8. Abuse GenericAll<br>Force Password Reset" --> Harley
+    Harley -- "9. RDP Access" --> SRV02
+    SRV02 -- "10. PrivEsc: PrintNightmare<br>(CVE-2021-34527)" --> Adm1n
+    Adm1n -- "11. Decrypt WinSCP Registry Creds" --> Harvey
+    Harvey -- "12. Add User to<br>Backup Operators Group" --> Harley
+    Harley -- "13. Remote Reg Save<br>(SAM, SYSTEM, SECURITY)" --> DC01
+    DC01 -- "14. Extract Admin NTLM" --> Administrator
+    Administrator == "15. DCSync (Game Over)" ==> DC01
+
+     DC01:::dc
+     SRV01:::server
+     SRV02:::server
+     Guest:::loot
+     Lucius:::loot
+     Joker:::loot
+     Klemou:::loot
+     gMSA:::loot
+     Harley:::loot
+     Adm1n:::loot
+     Harvey:::loot
+     Administrator:::loot
+    classDef dc fill:#d1ccc0,stroke:#e74c3c,stroke-width:2px
+    classDef server fill:#ffcccc,stroke:#e74c3c,stroke-width:2px
+    classDef loot fill:#f9ca24,stroke:#f1c40f,stroke-width:2px,stroke-dasharray: 5 5
+    linkStyle 14 stroke:#D50000,fill:none,stroke-width:4px
