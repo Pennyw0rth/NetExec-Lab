@@ -12,6 +12,8 @@ The ultimate goal? Become Domain Administrator by following various attack paths
 
 Obviously do not cheat by looking at the passwords and flags in the recipe files, the lab must start without user to full compromise.
 
+<img width="1633" height="2862" alt="Barbhack204-2025-11-29-193048" src="https://github.com/user-attachments/assets/42b1aa0e-c2df-448b-9a64-616dd145f0b6" />
+
 ### Public Writeups
 
 - [BarbHack CTF 2024 : Gotham City - Active Directory writeup](https://www.acceis.fr/write-up-barbhack-challenge-active-directory/) by [KlemouLeZoZo](https://kleman.pw/seigneur.html)
