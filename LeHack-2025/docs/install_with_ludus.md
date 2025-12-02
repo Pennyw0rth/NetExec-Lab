@@ -71,7 +71,7 @@ Install ansible and its requirements for the NetExec lab on your local machine.
 
 ```bash
 # You can use a virtualenv here if you would like
-python3 -m pip install ansible-core==2.12.6
+python3 -m pip install ansible-core=2.12.6
 python3 -m pip install pywinrm
 git clone https://github.com/Pennyw0rth/NetExec-Lab
 cd LeHack-2025/ansible
