@@ -6,6 +6,13 @@
 
 https://docs.ludus.cloud/docs/environment-guides/netexec-workshop-lehack-2024
 
+## Ansible issue:
+
+Make sure the ansible version is 2.12.6
+
+```bash
+python3 -m pip install ansible-core=2.12.6
+```
 
 ## Troubleshot DNS issues
 
