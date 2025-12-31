@@ -51,15 +51,26 @@ if (-not $hash) {
 Write-Host "Hash generated."
 
 # --- Compose Caddyfile ---
+# This config:
+#  - Serves the website from $WebsiteFolder
+#  - Protects the /scan path with Basic Auth (user: admin, password: hashed value)
+#  - Serves files under the scan subfolder when /scan is requested
 $CaddyfileContent = @"
 :8080 {
     # Serve the website root
     root * $WebsiteFolder
-    file_server browse
-    
+    file_server
+
     # Protect /scan with Basic Auth (user: $Username)
-    basicauth /scan/* {
-        $Username $hash
+    # Only requests under /scan/* will require authentication.
+    @scanPath path /scan/* /scan
+    route @scanPath {
+        # Basic auth using hashed password (bcrypt)
+        basicauth @scanPath $Username $hash
+
+        # Serve files from the scan folder
+        root * $ScanFolder
+        file_server
     }
 }
 "@
