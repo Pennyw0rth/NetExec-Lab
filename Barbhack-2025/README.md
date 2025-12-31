@@ -1,7 +1,7 @@
 # Barbhack CTF 2025 (Pirates - Active Directory Lab)
 
 <div>
-<img src="./barbhack.jpg"/>
+<img src="./barbhack-2025.jpg"/>
 </div>
 
 Welcome to the NetExec Active Directory Lab! This lab is designed to teach you how to exploit Active Directory (AD) environments using the powerful tool NetExec.
@@ -40,7 +40,6 @@ Obviously do not cheat by looking at the passwords and flags in the recipe files
 ### Public Writeups
 
 - [Barbhack 2025 AD Writeup](https://github.com/mael91620/Barbhack-2025-AD-writeup) by [@mael91620](https://github.com/mael91620)
-- [Lab Build Notes](https://gist.github.com/mpgn/e89e8aa08aec9283483855b6308c0a43) by [@mpgn](https://github.com/mpgn)
 
 There are 9 flags to find in this lab!
 
