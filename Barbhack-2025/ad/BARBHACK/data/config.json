@@ -90,9 +90,10 @@
                     "sa_password": "MSSQL@dmin2025!",
                     "svcaccount": "sql_svc",
                     "sysadmins": [],
-                    "executeasuser": {
-                        "gMSA-shipping$": "sa"
-                    }
+                    "executeaslogin": {
+                        "PIRATES\\gMSA-shipping$": "sa"
+                    },
+                    "executeasuser": {}
                 },
                 "vulns": [
                     "disable_firewall",
