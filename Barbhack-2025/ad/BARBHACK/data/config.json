@@ -167,6 +167,12 @@
                 "dc": "dc01",
                 "domain_password": "REDqC8aQtyhd78A",
                 "netbios_name": "PIRATES",
+                "organisation_units": {
+                    "PirateCrew": {
+                        "name": "PirateCrew",
+                        "path": "DC=PIRATES,DC=BRB"
+                    }
+                },
                 "groups": {
                     "PirateCrew": {
                         "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
