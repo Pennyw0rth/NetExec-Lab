@@ -1,0 +1,151 @@
+---
+# Barbhack 2025 specific configuration playbook
+# This handles all the special setup for the Pirates lab
+
+- name: Configure JOLLYROGER (Web Server with NTLMv1)
+  hosts: srv01
+  gather_facts: no
+  tasks:
+    - name: Enable NTLMv1 on JOLLYROGER
+      win_regedit:
+        path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+        name: LmCompatibilityLevel
+        data: 1
+        type: dword
+
+    - name: Create Caddy directory
+      win_file:
+        path: C:\Caddy
+        state: directory
+
+    - name: Create Websites directory
+      win_file:
+        path: C:\Websites\mywebsite
+        state: directory
+
+    - name: Copy Imprimante website to srv01
+      win_copy:
+        src: ../ad/BARBHACK/files/srv01/Imprimante/
+        dest: C:\Websites\mywebsite\
+
+    - name: Create TREASOR_HUNT directory
+      win_file:
+        path: C:\TREASOR_HUNT
+        state: directory
+
+    - name: Create Flag directory on JOLLYROGER
+      win_file:
+        path: C:\Flag
+        state: directory
+
+    - name: Copy flag to JOLLYROGER
+      win_copy:
+        src: ../ad/BARBHACK/files/srv01/flag.txt
+        dest: C:\Flag\flag.txt
+
+    - name: Copy treasure flag to share
+      win_copy:
+        src: ../ad/BARBHACK/files/srv01/treasor_flag.txt
+        dest: C:\TREASOR_HUNT\flag.txt
+
+    - name: Create local users script
+      win_copy:
+        src: ../ad/BARBHACK/scripts/local_users.ps1
+        dest: C:\setup\local_users.ps1
+
+    - name: Run local users creation
+      win_shell: C:\setup\local_users.ps1
+      ignore_errors: yes
+
+- name: Configure QUEENREV (MSSQL Server)
+  hosts: srv02
+  gather_facts: no
+  tasks:
+    - name: Disable outgoing NTLM on QUEENREV
+      win_regedit:
+        path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0
+        name: RestrictSendingNTLM
+        data: 1
+        type: dword
+
+    - name: Create ISLAND2 directory
+      win_file:
+        path: C:\ISLAND2
+        state: directory
+
+    - name: Create Flag directory on QUEENREV
+      win_file:
+        path: C:\Flag
+        state: directory
+
+    - name: Copy shipping.txt to ISLAND2
+      win_copy:
+        src: ../ad/BARBHACK/files/srv02/shipping.txt
+        dest: C:\ISLAND2\shipping.txt
+
+    - name: Copy flag to QUEENREV
+      win_copy:
+        src: ../ad/BARBHACK/files/srv02/flag.txt
+        dest: C:\Flag\flag.txt.txt
+
+- name: Configure FLYINGDUTCHMAN (NTDS Backup Server)
+  hosts: srv03
+  gather_facts: no
+  tasks:
+    - name: Disable outgoing NTLM on FLYINGDUTCHMAN
+      win_regedit:
+        path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0
+        name: RestrictSendingNTLM
+        data: 1
+        type: dword
+
+    - name: Create BACKUP directory structure
+      win_file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - C:\BACKUP
+        - C:\Flag
+
+    - name: Copy NTDS.zip backup to FLYINGDUTCHMAN
+      win_copy:
+        src: ../ad/BARBHACK/files/srv03/NTDS.zip
+        dest: C:\BACKUP\NTDS.zip
+
+    - name: Copy flag to FLYINGDUTCHMAN
+      win_copy:
+        src: ../ad/BARBHACK/files/srv03/flag.txt
+        dest: C:\Flag\flag.txt.txt
+
+- name: Configure BLACKPEARL (Domain Controller)
+  hosts: dc01
+  gather_facts: no
+  tasks:
+    - name: Disable outgoing NTLM on BLACKPEARL
+      win_regedit:
+        path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0
+        name: RestrictSendingNTLM
+        data: 1
+        type: dword
+
+    - name: Set Machine Account Quota to 0
+      win_shell: |
+        Import-Module ActiveDirectory
+        Set-ADDomain -Identity pirates.brb -Replace @{"ms-DS-MachineAccountQuota"="0"}
+      ignore_errors: yes
+
+    - name: Set flag in flint's description
+      win_shell: |
+        Import-Module ActiveDirectory
+        Set-ADUser -Identity "flint" -Description "brb{88e7af3d7bf9ab21f9d6faa5cf644b76}"
+      ignore_errors: yes
+
+    - name: Configure Constrained Delegation (QUEENREV -> FLYINGDUTCHMAN)
+      win_shell: |
+        Import-Module ActiveDirectory
+        $SourceAccount = Get-ADComputer -Identity "QUEENREV"
+        $TargetAccount = Get-ADComputer -Identity "FLYINGDUTCHMAN"
+        $TargetServiceSPN = "host/$($TargetAccount.DNSHostName)"
+        Set-ADComputer -Identity $SourceAccount.DistinguishedName -Add @{'msDS-AllowedToDelegateTo'=$TargetServiceSPN}
+        Set-ADComputer -Identity $SourceAccount.DistinguishedName -TrustedForDelegation $false
+      ignore_errors: yes

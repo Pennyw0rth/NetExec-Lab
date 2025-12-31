@@ -1,0 +1,14 @@
+# Prevent directory listing
+Options -Indexes
+
+# Deny access to all files by default
+<Files "*">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Optional: Custom error page for forbidden access
+ErrorDocument 403 "Access denied. Contact IT support for document access."
+
+# Optional: Redirect to main page instead of showing error
+# RedirectMatch 403 ^/scan/.*$ /index.html

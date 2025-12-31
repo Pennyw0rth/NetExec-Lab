@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied - HP LaserJet Pro</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .error-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        h1 { font-size: 48px; margin-bottom: 20px; }
+        p { font-size: 18px; margin-bottom: 30px; }
+        .back-btn {
+            background: #48bb78;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        .back-btn:hover { background: #38a169; transform: translateY(-2px); }
+    </style>
+    <script>
+        // Log unauthorized access attempt
+        console.log('Unauthorized access attempt to scan directory:', new Date().toISOString());
+        
+        // Store access attempt
+        try {
+            let unauthorizedAccess = JSON.parse(localStorage.getItem('unauthorizedAccess') || '[]');
+            unauthorizedAccess.push({
+                path: '/scan/',
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                referrer: document.referrer
+            });
+            localStorage.setItem('unauthorizedAccess', JSON.stringify(unauthorizedAccess));
+        } catch(e) {
+            console.log('Could not store unauthorized access attempt');
+        }
+        
+        // Redirect after 5 seconds
+        setTimeout(() => {
+            window.location.href = '/index.html';
+        }, 5000);
+    </script>
+</head>
+<body>
+    <div class="error-container">
+        <h1>🚫 403</h1>
+        <h2>Access Forbidden</h2>
+        <p>You don't have permission to access this directory.<br>
+        Document access must be requested through the printer interface.</p>
+        <p><strong>Contact:</strong> Ship's Quartermaster for assistance</p>
+        <a href="/index.html" class="back-btn">Return to Printer Interface</a>
+        <p style="font-size: 14px; margin-top: 20px; opacity: 0.8;">
+            Redirecting automatically in 5 seconds...
+        </p>
+    </div>
+</body>
+</html>

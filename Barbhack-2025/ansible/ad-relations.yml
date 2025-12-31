@@ -1,0 +1,16 @@
+---
+# Load datas
+- import_playbook: data.yml
+  vars:
+    data_path: "../ad/{{domain_name}}/data/"
+  tags: 'data'
+
+# set AD datas ==================================================================================================
+
+- name: "Adjust rights configuration"
+  hosts: domain
+  roles:
+    - { role: "settings/adjust_rights", tags: 'adjust_rights'}
+    - { role: "settings/user_rights", tags: 'adjust_rights'}
+  vars:
+    local_groups: "{{lab.hosts[dict_key].local_groups  | default({}) }}"

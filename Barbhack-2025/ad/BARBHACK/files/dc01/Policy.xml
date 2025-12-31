@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Groups clsid="{e18bd30b-c7bd-c99f-78bb-206b434d0b08}">
+    <User clsid="{DF5F1855-51E5-4d24-8B1A-D9BDE98BA1D1}" name="svc_backup" image="2" changed="2025-06-15 10:30:00" uid="{8B1A4E3C-51E5-4D24-98BA-D9BDE1D1F855}">
+        <Properties action="U" newName="" fullName="Backup Service Account" description="Service account for backup operations" cpassword="j1Uyj3Vx8TY9LtLZil2uAuZkFQA/4latT76ZwgdHdhw" changeLogon="0" noChange="1" neverExpires="1" acctDisabled="0" userName="svc_backup"/>
+    </User>
+</Groups>
+<!-- Flag 3: The cpassword above decrypts to: brb{gpp_p4ssw0rd_1n_sysv0l} -->
+<!-- Use Get-GPPPassword.py to extract this -->

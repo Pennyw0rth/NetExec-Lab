@@ -1,0 +1,4 @@
+brb{3fc1559c49d4313b174ea06d300b5ab1}
+
+Congratulations! You've exploited Kerberos Constrained Delegation without Protocol Transition!
+QUEENREV$ -> FLYINGDUTCHMAN$ delegation chain complete!
