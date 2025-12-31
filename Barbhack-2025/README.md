@@ -65,7 +65,6 @@ Ahoy, matey! Time to conquer the Seven Seas and claim the PIRATES.BRB domain!
 
 ## Special Thanks to
 
-- Aleem Ladha [@LadhaAleem](https://x.com/LadhaAleem) for creating this project and converting the Barbhack-2025 workshop to an ansible playbook  
 - M4yFly [@M4yFly](https://x.com/M4yFly) for the amazing GOAD project and ansible playbooks (This repo is based on the work of [Mayfly277](https://github.com/Orange-Cyberdefense/GOAD/))
 - mpgn [@mpgn_x64](https://x.com/mpgn_x64) for the Barbhack Windows CTF
 - mael91620 [@mael91620](https://github.com/mael91620) for the detailed writeup
