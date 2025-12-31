@@ -73,8 +73,22 @@ Write-Host "Website files should be in $WebsiteFolder (deployed by Ansible)"
 
 # --- Install Caddy as a Windows service ---
 Write-Host "Installing Caddy as a Windows service..."
-& $CaddyExe stop 2>$null
-& $CaddyExe run --config $Caddyfile &
+
+# Stop any existing Caddy process
+Get-Process -Name caddy -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+
+# Install Caddy as a Windows service using sc.exe
+$serviceName = "Caddy"
+$serviceExists = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
+
+if (-not $serviceExists) {
+    Write-Host "Creating Caddy Windows service..."
+    & sc.exe create $serviceName binPath= "$CaddyExe run --config $Caddyfile" start= auto
+}
+
+# Start the service
+Start-Service -Name $serviceName -ErrorAction SilentlyContinue
+Write-Host "Caddy service started"
 
 Write-Host "Caddy web server started on port 8080"
 Write-Host "The /scan path is protected with Basic Auth (user: $Username, pass: $PlainPassword)"

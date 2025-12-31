@@ -4,17 +4,30 @@
 Import-Module ActiveDirectory
 
 # Create the KDS Root Key (required for gMSA)
-# In production, use: Add-KdsRootKey -EffectiveTime ((Get-Date).AddHours(-10))
-Add-KdsRootKey -EffectiveImmediately
+# Check if a root key already exists
+$kdsKeys = Get-KdsRootKey -ErrorAction SilentlyContinue
+if (-not $kdsKeys) {
+    Write-Host "Creating KDS Root Key..."
+    # In production, use: Add-KdsRootKey -EffectiveTime ((Get-Date).AddHours(-10))
+    Add-KdsRootKey -EffectiveTime ((Get-Date).AddHours(-10)) -ErrorAction SilentlyContinue
+    Start-Sleep -Seconds 10
+} else {
+    Write-Host "KDS Root Key already exists"
+}
 
-Start-Sleep -Seconds 10
-
-# Create the gMSA account
-New-ADServiceAccount -Name "gMSA-shipping" `
-    -Description "gMSA for shipping service" `
-    -DNSHostName "gmsa-shipping.pirates.brb" `
-    -ManagedPasswordIntervalInDays 30 `
-    -Enabled $True
+# Check if gMSA already exists
+$existingGmsa = Get-ADServiceAccount -Identity "gMSA-shipping" -ErrorAction SilentlyContinue
+if (-not $existingGmsa) {
+    Write-Host "Creating gMSA-shipping account..."
+    # Create the gMSA account
+    New-ADServiceAccount -Name "gMSA-shipping" `
+        -Description "gMSA for shipping service" `
+        -DNSHostName "gmsa-shipping.pirates.brb" `
+        -ManagedPasswordIntervalInDays 30 `
+        -Enabled $True
+} else {
+    Write-Host "gMSA-shipping already exists"
+}
 
 # Allow Administrator to retrieve the managed password
 Set-ADServiceAccount `

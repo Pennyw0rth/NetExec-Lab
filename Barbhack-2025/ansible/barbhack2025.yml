@@ -48,6 +48,11 @@
         src: ../ad/BARBHACK/files/srv01/treasor_flag.txt
         dest: C:\TREASOR_HUNT\flag.txt
 
+    - name: Create setup directory
+      win_file:
+        path: C:\setup
+        state: directory
+
     - name: Create local users script
       win_copy:
         src: ../ad/BARBHACK/scripts/local_users.ps1
