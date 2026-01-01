@@ -46,8 +46,7 @@
                     "disable_firewall",
                     "directory",
                     "files",
-                    "shares",
-                    "openshares"
+                    "shares"
                 ],
                 "vulns_vars": {
                     "directory": {

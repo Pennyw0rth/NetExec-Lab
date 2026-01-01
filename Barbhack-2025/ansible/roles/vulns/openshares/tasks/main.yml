@@ -20,29 +20,3 @@
     name: AllowInsecureGuestAuth
     data: 1
     type: dword
-
-# allow guest user
-- name: activate guest account
-  win_command: net user guest /active:yes
-
-# SMB share anonymous
-- name: Ensure directory structure for all share exists
-  win_file:
-    path: C:\CleanSlate
-    state: directory
-
-- name: Add CleanSlate share everyone rights
-  win_acl:
-    path: C:\CleanSlate
-    user: Everyone
-    rights: FullControl
-    type: allow
-    state: present
-
-- name: CleanSlate shares
-  win_share:
-    name: CleanSlate
-    description: Basic RW share for all
-    path: C:\CleanSlate
-    list: yes
-    full: Everyone
