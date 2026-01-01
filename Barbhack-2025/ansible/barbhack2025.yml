@@ -85,6 +85,23 @@
         path: C:\ISLAND2
         state: directory
 
+    - name: Create SMB share ISLAND2
+      win_share:
+        name: ISLAND2
+        description: Island 2 Share
+        path: C:\ISLAND2
+        list: yes
+        full: Administrators
+      ignore_errors: yes
+
+    - name: Grant ironhook access to ISLAND2 share
+      ansible.windows.win_shell: |
+        Grant-SmbShareAccess -AccessRight Full -Name ISLAND2 -AccountName "PIRATES\ironhook" -Force
+
+    - name: Set NTFS permissions on ISLAND2 for ironhook
+      ansible.windows.win_shell: |
+        icacls "C:\ISLAND2" /grant "PIRATES\ironhook:(OI)(CI)F"
+
     - name: Create Flag directory on QUEENREV
       win_file:
         path: C:\Flag
@@ -175,3 +192,15 @@
         Set-ADComputer -Identity $SourceAccount.DistinguishedName -Add @{'msDS-AllowedToDelegateTo'=$TargetServiceSPN}
         Set-ADComputer -Identity $SourceAccount.DistinguishedName -TrustedForDelegation $false
       ignore_errors: yes
+
+# Remove LocalAccountTokenFilterPolicy on all servers to enforce UAC remote restrictions
+# This makes the lab more realistic - only RID 500 admin can use PsExec/wmiexec
+- name: Enforce UAC remote restrictions (remove LocalAccountTokenFilterPolicy)
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Remove LocalAccountTokenFilterPolicy registry key
+      win_regedit:
+        path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System
+        name: LocalAccountTokenFilterPolicy
+        state: absent

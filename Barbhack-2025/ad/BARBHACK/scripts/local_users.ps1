@@ -24,8 +24,8 @@ New-LocalUser -Name $User3 -Password $Pass3 -FullName "Random Pirate" -Descripti
 # --- Add them all to Users group ---
 Add-LocalGroupMember -Group "Users" -Member $User1,$User2,$User3 -ErrorAction SilentlyContinue
 
-# Add all users to Administrators group
-Add-LocalGroupMember -Group "Administrators" -Member $User1,$User2,$User3 -ErrorAction SilentlyContinue
+# Note: These users are NOT admins - they're regular users who store credentials
+# The attack path is: dump SAM -> crack password -> decrypt DPAPI vault
 
 # --- Display results ---
 Write-Host "`nAccounts created:"
