@@ -97,7 +97,7 @@
                 ],
                 "mssql": {
                     "sa_password": "MSSQL@dmin2025!",
-                    "svcaccount": "sql_svc",
+                    "svcaccount": "NT SERVICE\\MSSQLSERVER",
                     "sysadmins": [],
                     "executeaslogin": {
                         "PIRATES\\gMSA-shipping$": "sa"
@@ -658,16 +658,6 @@
                         "groups": [],
                         "path": "OU=PirateCrew,DC=PIRATES,DC=BRB",
                         "disabled": true
-                    },
-                    "sql_svc": {
-                        "firstname": "SQL",
-                        "surname": "Service",
-                        "password": "MSSQL@dmin2025!",
-                        "city": "-",
-                        "description": "MSSQL Service Account",
-                        "groups": [],
-                        "path": "CN=Users,DC=PIRATES,DC=BRB",
-                        "spns": ["MSSQLSvc/queenrev.pirates.brb:1433", "MSSQLSvc/queenrev.pirates.brb"]
                     }
                 }
             }
