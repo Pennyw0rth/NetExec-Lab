@@ -120,6 +120,16 @@
         src: ../ad/BARBHACK/files/srv02/flag.txt
         dest: C:\Flag\flag.txt.txt
 
+    - name: Copy db.sql to QUEENREV
+      win_copy:
+        src: ../ad/BARBHACK/scripts/db.sql
+        dest: C:\setup\db.sql
+
+    - name: Create SECRET_GOLD database and island table
+      ansible.windows.win_shell: |
+        SqlCmd -E -i C:\setup\db.sql
+      ignore_errors: yes
+
 - name: Configure FLYINGDUTCHMAN (NTDS Backup Server)
   hosts: srv03
   gather_facts: no

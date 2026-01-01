@@ -1,5 +1,5 @@
-# db.sql - MSSQL database setup for SECRET_GOLD
-# Run this on QUEENREV (srv02) in SQL Server Management Studio or via sqlcmd
+-- db.sql - MSSQL database setup for SECRET_GOLD
+-- Run this on QUEENREV (srv02) in SQL Server Management Studio or via sqlcmd
 
 -- Create the database if it does not exist
 IF DB_ID('SECRET_GOLD') IS NULL
