@@ -7,52 +7,35 @@ $TargetName = "smb.queenrev"
 $Username = "ironhook"
 $Password = "brb{5d26ec0024167fdf8a45a70eff4ade36}"
 
+# Pirate1 credentials
+$Pirate1User = "pirate1"
+$Pirate1Pass = "P@ssw0rd"
+
 # Create a scheduled task that runs as pirate1 to create the credential
-$Action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument @"
--NoProfile -ExecutionPolicy Bypass -Command "& {
-    Add-Type -AssemblyName System.Runtime.InteropServices
-    
-    # P/Invoke for CredWrite
-    `$sig = @'
-    [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-    public static extern bool CredWrite(ref CREDENTIAL credential, uint flags);
-    
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public struct CREDENTIAL {
-        public uint Flags;
-        public uint Type;
-        public string TargetName;
-        public string Comment;
-        public System.Runtime.InteropServices.ComTypes.FILETIME LastWritten;
-        public uint CredentialBlobSize;
-        public IntPtr CredentialBlob;
-        public uint Persist;
-        public uint AttributeCount;
-        public IntPtr Attributes;
-        public string TargetAlias;
-        public string UserName;
-    }
-'@
-    
-    # Use cmdkey to store the credential (simpler approach)
-    cmdkey /generic:$TargetName /user:$Username /pass:$Password
-}"
-"@
+$TaskName = "CreateDPAPICredential"
 
-# For simplicity, we'll use a batch script approach
-$BatchContent = @"
-@echo off
-cmdkey /generic:smb.queenrev /user:ironhook /pass:brb{5d26ec0024167fdf8a45a70eff4ade36}
-"@
+# Remove existing task if present
+Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false -ErrorAction SilentlyContinue
 
-$BatchPath = "C:\Windows\Temp\create_cred.bat"
-Set-Content -Path $BatchPath -Value $BatchContent -Force
+# Create the action - run cmdkey to store credential
+$Action = New-ScheduledTaskAction -Execute "cmdkey.exe" -Argument "/generic:$TargetName /user:$Username /pass:$Password"
 
-# Create a runas command to run as pirate1
-Write-Host "To create the DPAPI credential, run the following as pirate1:"
-Write-Host "  cmdkey /generic:smb.queenrev /user:ironhook /pass:brb{5d26ec0024167fdf8a45a70eff4ade36}"
-Write-Host ""
-Write-Host "Or run: runas /user:pirate1 `"$BatchPath`""
-Write-Host ""
-Write-Host "The credential will be stored in pirate1's DPAPI vault and can be"
-Write-Host "recovered using dploot if you have pirate1's cleartext password."
+# Create the task to run as pirate1
+$Task = New-ScheduledTask -Action $Action -Description "Create DPAPI credential for pirate1"
+
+# Register and run the task as pirate1
+Register-ScheduledTask -TaskName $TaskName -InputObject $Task -User $Pirate1User -Password $Pirate1Pass -RunLevel Highest
+
+# Run the task immediately
+Start-ScheduledTask -TaskName $TaskName
+
+# Wait for task to complete
+Start-Sleep -Seconds 5
+
+# Clean up - remove the task
+Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false -ErrorAction SilentlyContinue
+
+Write-Host "DPAPI credential created for pirate1 user"
+Write-Host "Target: $TargetName"
+Write-Host "Username: $Username"
+Write-Host "This can be recovered using dploot with pirate1's password (P@ssw0rd)"
