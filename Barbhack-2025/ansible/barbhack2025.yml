@@ -66,6 +66,16 @@
   hosts: srv02
   gather_facts: no
   tasks:
+    - name: Switch MSSQL service to NT SERVICE account (removes domain account)
+      ansible.windows.win_shell: |
+        # Stop the service
+        Stop-Service -Name MSSQLSERVER -Force -ErrorAction SilentlyContinue
+        # Change service account to virtual service account
+        sc.exe config MSSQLSERVER obj= "NT SERVICE\MSSQLSERVER"
+        # Start the service
+        Start-Service -Name MSSQLSERVER
+      ignore_errors: yes
+
     - name: Disable outgoing NTLM on QUEENREV (RestrictSendingNTLMTraffic)
       win_regedit:
         path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0
