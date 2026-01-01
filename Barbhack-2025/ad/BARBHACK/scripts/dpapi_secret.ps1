@@ -11,31 +11,30 @@ $Password = "brb{5d26ec0024167fdf8a45a70eff4ade36}"
 $Pirate1User = "pirate1"
 $Pirate1Pass = "P@ssw0rd"
 
-# Create a scheduled task that runs as pirate1 to create the credential
+# Task name
 $TaskName = "CreateDPAPICredential"
 
-# Remove existing task if present
-Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false -ErrorAction SilentlyContinue
+# Delete existing task if present
+schtasks /delete /tn $TaskName /f 2>$null
 
-# Create the action - run cmdkey to store credential
-$Action = New-ScheduledTaskAction -Execute "cmdkey.exe" -Argument "/generic:$TargetName /user:$Username /pass:$Password"
+# Create scheduled task using schtasks.exe (more reliable)
+schtasks /create /tn $TaskName /tr "cmdkey /generic:$TargetName /user:$Username /pass:$Password" /sc once /st 00:00 /ru $Pirate1User /rp $Pirate1Pass /f
 
-# Create the task to run as pirate1
-$Task = New-ScheduledTask -Action $Action -Description "Create DPAPI credential for pirate1"
-
-# Register and run the task as pirate1
-Register-ScheduledTask -TaskName $TaskName -InputObject $Task -User $Pirate1User -Password $Pirate1Pass -RunLevel Highest
-
-# Run the task immediately
-Start-ScheduledTask -TaskName $TaskName
-
-# Wait for task to complete
-Start-Sleep -Seconds 5
-
-# Clean up - remove the task
-Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false -ErrorAction SilentlyContinue
-
-Write-Host "DPAPI credential created for pirate1 user"
-Write-Host "Target: $TargetName"
-Write-Host "Username: $Username"
-Write-Host "This can be recovered using dploot with pirate1's password (P@ssw0rd)"
+if ($LASTEXITCODE -eq 0) {
+    # Run the task immediately
+    schtasks /run /tn $TaskName
+    
+    # Wait for task to complete
+    Start-Sleep -Seconds 5
+    
+    # Clean up - remove the task
+    schtasks /delete /tn $TaskName /f
+    
+    Write-Host "DPAPI credential created for pirate1 user"
+    Write-Host "Target: $TargetName"
+    Write-Host "Username: $Username"
+    Write-Host "This can be recovered using dploot with pirate1's password (P@ssw0rd)"
+} else {
+    Write-Host "ERROR: Failed to create scheduled task"
+    exit 1
+}
