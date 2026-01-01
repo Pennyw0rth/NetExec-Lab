@@ -65,8 +65,8 @@
     - '{{ SQLSVCACCOUNT }}'
     action: add
   when: 
-    - not SQLSVCACCOUNT == "NT AUTHORITY\\NETWORK SERVICE"
-    - not SQLSVCACCOUNT.startswith("NT SERVICE\\")
+    - SQLSVCACCOUNT != "NT AUTHORITY\\NETWORK SERVICE"
+    - "'NT SERVICE' not in SQLSVCACCOUNT"
 
 # - name: Setup service account
 # Set-ADUser -Identity "{{SQLSVCACCOUNT}}" -ServicePrincipalNames @{Add='MSSQLSvc/castelblack.north.sevenkingdoms.local'}
