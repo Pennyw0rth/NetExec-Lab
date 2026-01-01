@@ -46,13 +46,17 @@
                     "disable_firewall",
                     "directory",
                     "files",
-                    "shares"
+                    "shares",
+                    "permissions",
+                    "openshares"
                 ],
                 "vulns_vars": {
                     "directory": {
                         "Caddy": "C:\\Caddy",
                         "Websites": "C:\\Websites\\mywebsite",
                         "scan": "C:\\Websites\\mywebsite\\scan",
+                        "TREASOR_HUNT": "C:\\TREASOR_HUNT"
+                    },
                         "Flag": "C:\\Flag"
                     },
                     "files": {
@@ -68,6 +72,13 @@
                             "full": "PIRATES\\barnacle",
                             "change": "PIRATES\\barnacle",
                             "read": "PIRATES\\barnacle"
+                        }
+                    },
+                    "permissions": {
+                        "TREASOR_HUNT": {
+                            "path": "C:\\TREASOR_HUNT",
+                            "user": "PIRATES\\barnacle",
+                            "rights": "FullControl,Read,Write"
                         }
                     }
                 }
