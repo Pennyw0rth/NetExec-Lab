@@ -66,11 +66,18 @@
   hosts: srv02
   gather_facts: no
   tasks:
-    - name: Disable outgoing NTLM on QUEENREV
+    - name: Disable outgoing NTLM on QUEENREV (RestrictSendingNTLMTraffic)
       win_regedit:
         path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0
-        name: RestrictSendingNTLM
-        data: 1
+        name: RestrictSendingNTLMTraffic
+        data: 2
+        type: dword
+
+    - name: Set LmCompatibilityLevel to 5 on QUEENREV
+      win_regedit:
+        path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+        name: LmCompatibilityLevel
+        data: 5
         type: dword
 
     - name: Create ISLAND2 directory
@@ -97,11 +104,18 @@
   hosts: srv03
   gather_facts: no
   tasks:
-    - name: Disable outgoing NTLM on FLYINGDUTCHMAN
+    - name: Disable outgoing NTLM on FLYINGDUTCHMAN (RestrictSendingNTLMTraffic)
       win_regedit:
         path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0
-        name: RestrictSendingNTLM
-        data: 1
+        name: RestrictSendingNTLMTraffic
+        data: 2
+        type: dword
+
+    - name: Set LmCompatibilityLevel to 5 on FLYINGDUTCHMAN
+      win_regedit:
+        path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+        name: LmCompatibilityLevel
+        data: 5
         type: dword
 
     - name: Create BACKUP directory structure
@@ -126,11 +140,18 @@
   hosts: dc01
   gather_facts: no
   tasks:
-    - name: Disable outgoing NTLM on BLACKPEARL
+    - name: Disable outgoing NTLM on BLACKPEARL (RestrictSendingNTLMTraffic)
       win_regedit:
         path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0
-        name: RestrictSendingNTLM
-        data: 1
+        name: RestrictSendingNTLMTraffic
+        data: 2
+        type: dword
+
+    - name: Set LmCompatibilityLevel to 5 on BLACKPEARL
+      win_regedit:
+        path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
+        name: LmCompatibilityLevel
+        data: 5
         type: dword
 
     - name: Set Machine Account Quota to 0

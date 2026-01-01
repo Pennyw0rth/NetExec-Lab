@@ -5,16 +5,19 @@
 # Only JOLLYROGER should respond with NTLMv1
 
 $RegPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\MSV1_0"
-$ValueName = "RestrictSendingNTLM"
-$ValueData = 1  # Deny outgoing NTLM
 
 # Ensure the registry path exists
 if (-not (Test-Path $RegPath)) { 
     New-Item -Path $RegPath -Force | Out-Null 
 }
 
-# Set the registry value
-New-ItemProperty -Path $RegPath -Name $ValueName -PropertyType DWord -Value $ValueData -Force
+# RestrictSendingNTLMTraffic = 2 (Deny all outgoing NTLM traffic)
+New-ItemProperty -Path $RegPath -Name "RestrictSendingNTLMTraffic" -PropertyType DWord -Value 2 -Force
+
+# Also set the Network Security policy via LSA
+$LsaPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa"
+# LmCompatibilityLevel = 5 (Send NTLMv2 response only. Refuse LM & NTLM)
+New-ItemProperty -Path $LsaPath -Name "LmCompatibilityLevel" -PropertyType DWord -Value 5 -Force
 
 Write-Host "Outgoing NTLM disabled on $env:COMPUTERNAME"
 Write-Host "This server will not send NTLM responses when coerced"
