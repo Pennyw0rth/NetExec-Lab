@@ -79,7 +79,8 @@
         Stop-Service -Name $serviceName -Force -ErrorAction SilentlyContinue
         Start-Sleep -Seconds 2
         # Change service account to virtual service account
-        sc.exe config $serviceName obj= "NT SERVICE\$serviceName"
+        $ntService = "NT SERVICE\" + $serviceName
+        sc.exe config $serviceName obj= $ntService
         Start-Sleep -Seconds 2
         # Start the service
         Start-Service -Name $serviceName
