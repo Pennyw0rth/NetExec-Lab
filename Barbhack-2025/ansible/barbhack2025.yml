@@ -75,14 +75,11 @@
     - name: Switch MSSQL service to NT SERVICE account (removes domain account)
       ansible.windows.win_shell: |
         $serviceName = "{{ mssql_service.stdout | trim }}"
-        # Stop the service
         Stop-Service -Name $serviceName -Force -ErrorAction SilentlyContinue
         Start-Sleep -Seconds 2
-        # Change service account to virtual service account
-        $ntService = "NT SERVICE\" + $serviceName
+        $ntService = "NT SERVICE\\" + $serviceName
         sc.exe config $serviceName obj= $ntService
         Start-Sleep -Seconds 2
-        # Start the service
         Start-Service -Name $serviceName
       when: "'notfound' not in mssql_service.stdout"
 
