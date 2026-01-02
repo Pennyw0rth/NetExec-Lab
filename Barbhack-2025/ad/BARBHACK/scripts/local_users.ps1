@@ -24,7 +24,11 @@ New-LocalUser -Name $User3 -Password $Pass3 -FullName "Random Pirate" -Descripti
 # --- Add them all to Users group ---
 Add-LocalGroupMember -Group "Users" -Member $User1,$User2,$User3 -ErrorAction SilentlyContinue
 
-# Note: These users are NOT admins - they're regular users who store credentials
+# --- Add pirate1 to Administrators for scheduled task to work ---
+# Required for DPAPI credential storage via scheduled task (batch logon rights)
+Add-LocalGroupMember -Group "Administrators" -Member $User1 -ErrorAction SilentlyContinue
+
+# Note: pirate1 is admin (needed for scheduled task), pirate2/3 are regular users
 # The attack path is: dump SAM -> crack password -> decrypt DPAPI vault
 
 # --- Display results ---
