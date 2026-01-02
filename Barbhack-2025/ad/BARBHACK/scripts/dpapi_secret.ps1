@@ -4,75 +4,113 @@
 
 # The secret to store (this is Flag 5)
 $TargetName = "smb.queenrev"
-$Username = "ironhook"
+$Username = "ironhook"  
 $Password = "brb{5d26ec0024167fdf8a45a70eff4ade36}"
 
 # Pirate1 credentials
 $Pirate1User = "pirate1"
 $Pirate1Pass = "P@ssw0rd"
 
-# First, create user profile by simulating a login
-Write-Host "Creating user profile for pirate1..."
+Write-Host "Creating DPAPI credential for pirate1 using scheduled task..."
 
-# Use ProfileFunctions to create the user profile
-Add-Type -TypeDefinition @"
+$TaskName = "CreateDPAPICredential"
+
+# Delete existing task if present
+schtasks /delete /tn $TaskName /f 2>$null
+
+# Create scheduled task that runs INTERACTIVELY when pirate1 logs on
+# /RL HIGHEST = Run with highest privileges
+# /IT = Interactive only (but we'll also trigger it)
+schtasks /create /tn $TaskName `
+    /tr "cmdkey /generic:$TargetName /user:$Username /pass:$Password" `
+    /sc ONLOGON `
+    /ru $Pirate1User `
+    /rp $Pirate1Pass `
+    /rl HIGHEST `
+    /f
+
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "Task created, now simulating logon to trigger it..."
+    
+    # Simulate a logon session for pirate1 to trigger the task
+    # This uses LogonUser API to create a proper interactive session
+    Add-Type -TypeDefinition @"
 using System;
 using System.Runtime.InteropServices;
+using System.Security.Principal;
 
-public class ProfileHelper {
-    [DllImport("userenv.dll", SetLastError = true, CharSet = CharSet.Auto)]
-    public static extern bool CreateProfile(
-        [MarshalAs(UnmanagedType.LPWStr)] String pszUserSid,
-        [MarshalAs(UnmanagedType.LPWStr)] String pszUserName,
-        [Out, MarshalAs(UnmanagedType.LPWStr)] System.Text.StringBuilder pszProfilePath,
-        uint cchProfilePath);
-}
-"@
-
-# Get pirate1 SID
-$user = New-Object System.Security.Principal.NTAccount($Pirate1User)
-$sid = $user.Translate([System.Security.Principal.SecurityIdentifier]).Value
-
-# Create profile path buffer
-$profilePath = New-Object System.Text.StringBuilder(260)
-
-# Try to create profile (may fail if already exists, that's ok)
-[ProfileHelper]::CreateProfile($sid, $Pirate1User, $profilePath, 260) | Out-Null
-
-# Alternative: Use runas to force profile creation via interactive login simulation
-# Create a script that will run as pirate1
-$tempScript = "C:\Windows\Temp\create_cred_pirate1.ps1"
-$scriptContent = @"
-
-`$cred = New-Object System.Management.Automation.PSCredential("$Pirate1User", (ConvertTo-SecureString "$Pirate1Pass" -AsPlainText -Force))
-cmdkey /generic:$TargetName /user:$Username /pass:$Password
-"@
-Set-Content -Path $tempScript -Value $scriptContent
-
-# Use Start-Process with credentials to create profile and run cmdkey
-$securePass = ConvertTo-SecureString $Pirate1Pass -AsPlainText -Force
-$cred = New-Object System.Management.Automation.PSCredential($Pirate1User, $securePass)
-
-try {
-    # This forces profile creation (-NoNewWindow not compatible with -Credential)
-    Start-Process -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -WindowStyle Hidden -Command `"cmdkey /generic:$TargetName /user:$Username /pass:$Password`"" -Credential $cred -LoadUserProfile -Wait
-    Write-Host "DPAPI credential created for pirate1 user"
-    Write-Host "Target: $TargetName"
-    Write-Host "Username: $Username"
-    Write-Host "Profile created at: C:\Users\$Pirate1User"
-    Write-Host "This can be recovered using dploot with pirate1's password (P@ssw0rd)"
-} catch {
-    Write-Host "ERROR: $_"
+public class LogonHelper {
+    [DllImport("advapi32.dll", SetLastError = true)]
+    public static extern bool LogonUser(
+        string lpszUsername, string lpszDomain, string lpszPassword,
+        int dwLogonType, int dwLogonProvider, out IntPtr phToken);
     
-    # Fallback: Try scheduled task method
-    Write-Host "Trying scheduled task method..."
-    $TaskName = "CreateDPAPICredential"
-    schtasks /delete /tn $TaskName /f 2>$null
-    schtasks /create /tn $TaskName /tr "cmdkey /generic:$TargetName /user:$Username /pass:$Password" /sc once /st 00:00 /ru $Pirate1User /rp $Pirate1Pass /f
-    schtasks /run /tn $TaskName
-    Start-Sleep -Seconds 5
-    schtasks /delete /tn $TaskName /f
+    [DllImport("kernel32.dll", SetLastError = true)]
+    public static extern bool CloseHandle(IntPtr hObject);
+    
+    [DllImport("userenv.dll", SetLastError = true)]
+    public static extern bool LoadUserProfile(IntPtr hToken, ref PROFILEINFO lpProfileInfo);
+    
+    [DllImport("userenv.dll", SetLastError = true)]
+    public static extern bool UnloadUserProfile(IntPtr hToken, IntPtr hProfile);
+    
+    [StructLayout(LayoutKind.Sequential)]
+    public struct PROFILEINFO {
+        public int dwSize;
+        public int dwFlags;
+        [MarshalAs(UnmanagedType.LPTStr)] public string lpUserName;
+        [MarshalAs(UnmanagedType.LPTStr)] public string lpProfilePath;
+        [MarshalAs(UnmanagedType.LPTStr)] public string lpDefaultPath;
+        [MarshalAs(UnmanagedType.LPTStr)] public string lpServerName;
+        [MarshalAs(UnmanagedType.LPTStr)] public string lpPolicyPath;
+        public IntPtr hProfile;
+    }
+    
+    public const int LOGON32_LOGON_INTERACTIVE = 2;
+    public const int LOGON32_PROVIDER_DEFAULT = 0;
 }
+"@
 
-# Clean up temp script
-Remove-Item $tempScript -Force -ErrorAction SilentlyContinue
+    $token = [IntPtr]::Zero
+    $result = [LogonHelper]::LogonUser($Pirate1User, ".", $Pirate1Pass, 
+        [LogonHelper]::LOGON32_LOGON_INTERACTIVE, 
+        [LogonHelper]::LOGON32_PROVIDER_DEFAULT, 
+        [ref]$token)
+    
+    if ($result -and $token -ne [IntPtr]::Zero) {
+        Write-Host "Interactive logon successful, loading profile..."
+        
+        $profileInfo = New-Object LogonHelper+PROFILEINFO
+        $profileInfo.dwSize = [System.Runtime.InteropServices.Marshal]::SizeOf($profileInfo)
+        $profileInfo.lpUserName = $Pirate1User
+        
+        $loaded = [LogonHelper]::LoadUserProfile($token, [ref]$profileInfo)
+        
+        if ($loaded) {
+            Write-Host "Profile loaded, running cmdkey in user context..."
+            
+            # Now run the scheduled task
+            schtasks /run /tn $TaskName
+            Start-Sleep -Seconds 3
+            
+            # Unload profile
+            [LogonHelper]::UnloadUserProfile($token, $profileInfo.hProfile) | Out-Null
+        }
+        
+        [LogonHelper]::CloseHandle($token) | Out-Null
+    } else {
+        Write-Host "LogonUser failed, running task anyway..."
+        schtasks /run /tn $TaskName
+        Start-Sleep -Seconds 3
+    }
+    
+    # Clean up task
+    schtasks /delete /tn $TaskName /f
+    
+    Write-Host ""
+    Write-Host "SUCCESS: DPAPI credential should be created"
+    Write-Host "Verify: dir C:\Users\pirate1\AppData\Local\Microsoft\Credentials"
+} else {
+    Write-Host "ERROR: Failed to create scheduled task"
+    exit 1
+}
