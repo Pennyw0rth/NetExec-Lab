@@ -93,6 +93,20 @@
     path: "C:\\Program Files\\Microsoft SQL Server\\150\\Setup Bootstrap"
   register: sql_bootstrap_exists
 
+# Check if SQL is already fully installed (from base template)
+- name: Check if MSSQL is already installed in registry
+  ansible.windows.win_reg_stat:
+    path: HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\Instance Names\SQL
+    name: SQLEXPRESS
+  register: sql_registry_check
+
+- name: Set fact if SQL already installed
+  set_fact:
+    sql_already_installed: "{{ sql_registry_check.exists and sql_registry_check.value is defined }}"
+
+- debug: 
+    msg: "SQL Server already installed: {{ sql_already_installed }}"
+
 - name: Clean up partial SQL Server installation if service doesn't exist
   ansible.windows.win_shell: |
     # Stop any SQL processes
@@ -141,7 +155,9 @@
   until: "mssqlinstall is not failed"
   retries: 3
   delay: 120
-  when: mssql_install_already_done.state is not defined or mssql_install_already_done.name is not defined
+  when: 
+    - mssql_install_already_done.state is not defined or mssql_install_already_done.name is not defined
+    - not sql_already_installed
 #  when: not mssql_install_already_done.stat.exists
 
 # sql server 2022
