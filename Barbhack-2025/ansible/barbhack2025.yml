@@ -66,22 +66,15 @@
   hosts: srv02
   gather_facts: no
   tasks:
-    - name: Get MSSQL service name
-      ansible.windows.win_shell: |
-        $svc = Get-Service | Where-Object { $_.Name -like "MSSQL`$*" -or $_.Name -eq "MSSQLSERVER" } | Select-Object -First 1
-        if ($svc) { $svc.Name } else { "notfound" }
-      register: mssql_service
-
     - name: Switch MSSQL service to NT SERVICE account (removes domain account)
-      ansible.windows.win_shell: |
-        $serviceName = "{{ mssql_service.stdout | trim }}"
-        Stop-Service -Name $serviceName -Force -ErrorAction SilentlyContinue
-        Start-Sleep -Seconds 2
-        $ntService = "NT SERVICE\\" + $serviceName
-        sc.exe config $serviceName obj= $ntService
-        Start-Sleep -Seconds 2
-        Start-Service -Name $serviceName
-      when: "'notfound' not in mssql_service.stdout"
+      ansible.windows.win_shell: >-
+        $svc = (Get-Service | Where-Object { $_.Name -like 'MSSQL$*' }).Name;
+        Stop-Service -Name $svc -Force;
+        Start-Sleep -Seconds 2;
+        sc.exe config $svc obj= ('NT SERVICE\' + $svc);
+        Start-Sleep -Seconds 2;
+        Start-Service -Name $svc
+      ignore_errors: yes
 
     - name: Disable outgoing NTLM on QUEENREV (RestrictSendingNTLMTraffic)
       win_regedit:
