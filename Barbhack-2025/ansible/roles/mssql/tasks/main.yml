@@ -87,6 +87,45 @@
 
 - debug: msg="{{mssql_install_already_done}}"
 
+# Check for partial/failed installation and clean up
+- name: Check for partial SQL Server installation
+  win_stat:
+    path: "C:\\Program Files\\Microsoft SQL Server\\150\\Setup Bootstrap"
+  register: sql_bootstrap_exists
+
+- name: Clean up partial SQL Server installation if service doesn't exist
+  ansible.windows.win_shell: |
+    # Stop any SQL processes
+    Get-Process -Name *sql* -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+    Start-Sleep -Seconds 5
+    
+    # Try to uninstall using setup.exe if it exists
+    $setupPath = "C:\Program Files\Microsoft SQL Server\150\Setup Bootstrap\SQL2019\setup.exe"
+    if (Test-Path $setupPath) {
+        Start-Process -FilePath $setupPath -ArgumentList "/ACTION=Uninstall /FEATURES=SQLENGINE /INSTANCENAME=SQLEXPRESS /Q" -Wait -NoNewWindow -ErrorAction SilentlyContinue
+        Start-Sleep -Seconds 10
+    }
+    
+    # Clean up registry
+    Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL15.SQLEXPRESS" -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\150" -Recurse -Force -ErrorAction SilentlyContinue
+    
+    # Clean up directories
+    Remove-Item -Path "C:\Program Files\Microsoft SQL Server\MSSQL15.SQLEXPRESS" -Recurse -Force -ErrorAction SilentlyContinue
+    
+    Write-Host "Cleanup completed"
+  when: 
+    - sql_bootstrap_exists.stat.exists
+    - mssql_install_already_done.state is not defined or mssql_install_already_done.name is not defined
+  ignore_errors: yes
+
+- name: Reboot after cleanup if needed
+  win_reboot:
+    reboot_timeout: 600
+  when: 
+    - sql_bootstrap_exists.stat.exists
+    - mssql_install_already_done.state is not defined or mssql_install_already_done.name is not defined
+
 # Install the database with a domain admin user
 - name: Install the database
   win_command: c:\setup\mssql\sql_installer.exe /configurationfile=c:\setup\mssql\sql_conf.ini /IACCEPTSQLSERVERLICENSETERMS /MEDIAPATH=c:\setup\mssql\media /QUIET /HIDEPROGRESSBAR
