@@ -662,7 +662,7 @@
                     "sql_svc": {
                         "firstname": "SQL",
                         "surname": "Service",
-                        "password": "MSSQL@dmin2025!",
+                        "password": "MSSQLadmin2025Pirates",
                         "city": "-",
                         "description": "MSSQL Service Account",
                         "groups": [],
