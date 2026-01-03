@@ -41,12 +41,36 @@ Wait until DEPLOYMENT STATUS shows `SUCCESS`.
 SSH into your Kali VM or run from your local machine:
 
 ```bash
-# Replace RANGENUMBER with your actual range number (e.g., 2 for 10.2.x.x)
-cd ansible
-sed -i 's/RANGENUMBER/YOUR_RANGE_NUMBER/g' ../ad/BARBHACK/providers/ludus/inventory.yml
-
-ansible-playbook -i ../ad/BARBHACK/data/inventory -i ../ad/BARBHACK/providers/ludus/inventory.yml main.yml
+cd Barbhack-2025/ansible
+# in the ansible folder perform the following
+export RANGENUMBER=$(ludus range list --json | jq '.rangeNumber')
+# sudo apt install jq if you don't have jq
+sed -i "s/RANGENUMBER/$RANGENUMBER/g" ../ad/BARBHACK/providers/ludus/inventory.yml
+export ANSIBLE_COMMAND="ansible-playbook -i ../ad/BARBHACK/data/inventory -i ../ad/BARBHACK/providers/ludus/inventory.yml"
+export LAB="BARBHACK"
+chmod +x ../scripts/provisionning.sh
+../scripts/provisionning.sh
 ```
+
+Now you wait. `[WARNING]` lines are ok, and some steps may take a long time, don't panic!
+
+This will take a few hours. You'll know it is done when you see:
+
+```
+May the wind be at your back and the rum never run dry!
+```
+
+### 4. Snapshot VMs
+
+Take snapshots via the proxmox web UI or run the following ludus command:
+
+```bash
+ludus snapshot create clean-setup -d "Clean setup of the netexec lab after ansible run"
+```
+
+### 5. Hack!
+
+Access your Kali machine at `https://10.RANGENUMBER.10.99:8444` using the creds `kali:password`.
 
 ## Ansible Issue
 
