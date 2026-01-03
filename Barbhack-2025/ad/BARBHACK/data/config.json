@@ -10,7 +10,7 @@
                 "local_groups": {
                     "Administrators": []
                 },
-                "scripts": ["users.ps1", "description.ps1", "gmsa.ps1", "reset-admin-pass.ps1", "delegation.ps1", "maq.ps1"],
+                "scripts": ["users.ps1", "description.ps1", "reset-admin-pass.ps1", "delegation.ps1", "maq.ps1"],
                 "vulns": [
                     "disable_firewall",
                     "directory",
