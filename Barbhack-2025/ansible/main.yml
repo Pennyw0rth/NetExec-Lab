@@ -33,7 +33,7 @@
 #- import_playbook: laps.yml
 
 ## MSSQL ----------
-- import_playbook: servers.yml
+- import_playbook: msqlsrv02.yml
 
 ## AD - servers localgroup + rdp + inter domain relations & acl
 # set the rights and the group domains relations
