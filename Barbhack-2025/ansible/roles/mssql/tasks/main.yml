@@ -64,9 +64,7 @@
     users:
     - '{{ SQLSVCACCOUNT }}'
     action: add
-  when: 
-    - SQLSVCACCOUNT != "NT AUTHORITY\\NETWORK SERVICE"
-    - "'NT SERVICE' not in SQLSVCACCOUNT"
+  when: not SQLSVCACCOUNT == "NT AUTHORITY\\NETWORK SERVICE"
 
 # - name: Setup service account
 # Set-ADUser -Identity "{{SQLSVCACCOUNT}}" -ServicePrincipalNames @{Add='MSSQLSvc/castelblack.north.sevenkingdoms.local'}
@@ -87,59 +85,6 @@
 
 - debug: msg="{{mssql_install_already_done}}"
 
-# Check for partial/failed installation and clean up
-- name: Check for partial SQL Server installation
-  win_stat:
-    path: "C:\\Program Files\\Microsoft SQL Server\\150\\Setup Bootstrap"
-  register: sql_bootstrap_exists
-
-# Check if SQL is already fully installed (from base template)
-- name: Check if MSSQL is already installed in registry
-  ansible.windows.win_reg_stat:
-    path: HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\Instance Names\SQL
-    name: SQLEXPRESS
-  register: sql_registry_check
-
-- name: Set fact if SQL already installed
-  set_fact:
-    sql_already_installed: "{{ sql_registry_check.exists and sql_registry_check.value is defined }}"
-
-- debug: 
-    msg: "SQL Server already installed: {{ sql_already_installed }}"
-
-- name: Clean up partial SQL Server installation if service doesn't exist
-  ansible.windows.win_shell: |
-    # Stop any SQL processes
-    Get-Process -Name *sql* -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
-    Start-Sleep -Seconds 5
-    
-    # Try to uninstall using setup.exe if it exists
-    $setupPath = "C:\Program Files\Microsoft SQL Server\150\Setup Bootstrap\SQL2019\setup.exe"
-    if (Test-Path $setupPath) {
-        Start-Process -FilePath $setupPath -ArgumentList "/ACTION=Uninstall /FEATURES=SQLENGINE /INSTANCENAME=SQLEXPRESS /Q" -Wait -NoNewWindow -ErrorAction SilentlyContinue
-        Start-Sleep -Seconds 10
-    }
-    
-    # Clean up registry
-    Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL15.SQLEXPRESS" -Recurse -Force -ErrorAction SilentlyContinue
-    Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\150" -Recurse -Force -ErrorAction SilentlyContinue
-    
-    # Clean up directories
-    Remove-Item -Path "C:\Program Files\Microsoft SQL Server\MSSQL15.SQLEXPRESS" -Recurse -Force -ErrorAction SilentlyContinue
-    
-    Write-Host "Cleanup completed"
-  when: 
-    - sql_bootstrap_exists.stat.exists
-    - mssql_install_already_done.state is not defined or mssql_install_already_done.name is not defined
-  ignore_errors: yes
-
-- name: Reboot after cleanup if needed
-  win_reboot:
-    reboot_timeout: 600
-  when: 
-    - sql_bootstrap_exists.stat.exists
-    - mssql_install_already_done.state is not defined or mssql_install_already_done.name is not defined
-
 # Install the database with a domain admin user
 - name: Install the database
   win_command: c:\setup\mssql\sql_installer.exe /configurationfile=c:\setup\mssql\sql_conf.ini /IACCEPTSQLSERVERLICENSETERMS /MEDIAPATH=c:\setup\mssql\media /QUIET /HIDEPROGRESSBAR
@@ -155,9 +100,7 @@
   until: "mssqlinstall is not failed"
   retries: 3
   delay: 120
-  when: 
-    - mssql_install_already_done.state is not defined or mssql_install_already_done.name is not defined
-    - not sql_already_installed
+  when: mssql_install_already_done.state is not defined or mssql_install_already_done.name is not defined
 #  when: not mssql_install_already_done.stat.exists
 
 # sql server 2022
