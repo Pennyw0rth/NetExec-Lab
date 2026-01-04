@@ -123,14 +123,23 @@
 - name: Generate gMSA blob on DC
   hosts: dc01
   gather_facts: no
+  vars:
+    domain: "{{ lab.hosts[dict_key].domain }}"
+    domain_admin: "{{ domain }}\\Administrator"
+    domain_password: "{{ lab.domains[domain].domain_password }}"
   tasks:
-    - name: Generate shipping.txt content on DC
+    - name: Generate shipping.txt content on DC (as Administrator)
       ansible.windows.win_shell: |
         $header = "Just found this on the back of the ship, is this sensitive information ?`r`n`r`n"
         $gmsa = Get-ADServiceAccount -Identity "gMSA-shipping" -Properties *,msDS-ManagedPassword
         $gmsaOutput = $gmsa | Out-String
         $content = $header + $gmsaOutput
         Set-Content -Path "C:\shipping.txt" -Value $content
+      become: yes
+      become_method: runas
+      become_user: "{{ domain_admin }}"
+      vars:
+        ansible_become_password: "{{ domain_password }}"
 
     - name: Fetch shipping.txt from DC
       fetch:
