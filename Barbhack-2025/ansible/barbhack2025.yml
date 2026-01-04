@@ -53,15 +53,6 @@
         path: C:\setup
         state: directory
 
-    - name: Create local users script
-      win_copy:
-        src: ../ad/BARBHACK/scripts/local_users.ps1
-        dest: C:\setup\local_users.ps1
-
-    - name: Run local users creation
-      win_shell: C:\setup\local_users.ps1
-      ignore_errors: yes
-
 - name: Configure QUEENREV (MSSQL Server)
   hosts: srv02
   gather_facts: no
