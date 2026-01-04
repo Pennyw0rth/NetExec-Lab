@@ -1,0 +1,17 @@
+Just found this on the back of the ship, is this sensitive information ?
+
+DistinguishedName      : CN=gMSA-shipping,CN=Managed Service Accounts,DC=pirates,DC=brb
+Enabled                : True
+Name                   : gMSA-shipping
+ObjectClass            : msDS-GroupManagedServiceAccount
+ObjectGUID             : a1b2c3d4-e5f6-7890-abcd-ef1234567890
+SamAccountName         : gMSA-shipping$
+SID                    : S-1-5-21-1234567890-1234567890-1234567890-1234
+UserPrincipalName      : 
+msDS-ManagedPassword   : {1, 0, 0, 0, 32, 0, 0, 0, 16, 0, 0, 0, ...}
+
+Raw msDS-ManagedPassword blob (base64):
+AQAAACAAABAAAAABAAAAAAAAAAAAAAAB... [truncated for security]
+
+Note: Use gmsaOfflineParser.py to extract the NT hash from this blob.
+https://github.com/mael91620/gmsaOfflineParser.py

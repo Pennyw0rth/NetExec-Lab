@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HP LaserJet Pro M404n - Web Interface</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖨️</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="printer-info">
+                <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 100 100'><rect x='10' y='20' width='80' height='50' fill='%23333' rx='5'/><rect x='15' y='25' width='70' height='20' fill='%23666'/><rect x='20' y='50' width='60' height='20' fill='%23444'/></svg>" alt="Printer Icon">
+                <div>
+                    <h1>HP LaserJet Pro M404n</h1>
+                    <p class="model">Model: W1A52A</p>
+                    <p class="ip">IP Address: 192.168.1.100</p>
+                </div>
+            </div>
+            <div class="status">
+                <span class="status-ready">Ready</span>
+            </div>
+        </header>
+
+        <nav class="navigation">
+            <button class="nav-btn active" onclick="showTab('home')">Home</button>
+            <button class="nav-btn" onclick="showTab('jobs')">Jobs</button>
+            <button class="nav-btn" onclick="showTab('network')">Network</button>
+            <button class="nav-btn" onclick="showTab('security')">Security</button>
+            <button class="nav-btn" onclick="showTab('support')">Support</button>
+        </nav>
+
+        <main class="main-content">
+            <!-- Home Tab -->
+            <div id="home" class="tab-content active">
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>Printer Status</h3>
+                        <div class="status-item">
+                            <span>Status:</span>
+                            <span class="ready">Ready</span>
+                        </div>
+                        <div class="status-item">
+                            <span>Toner Level:</span>
+                            <span>85%</span>
+                        </div>
+                        <div class="status-item">
+                            <span>Paper Tray:</span>
+                            <span>Full</span>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <h3>Recent Jobs</h3>
+                        <div class="job-item">
+                            <span>Document1.pdf</span>
+                            <span class="job-status completed">Completed</span>
+                        </div>
+                        <div class="job-item">
+                            <span>Report_Q3.docx</span>
+                            <span class="job-status completed">Completed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jobs Tab -->
+            <div id="jobs" class="tab-content">
+                <div class="jobs-section">
+                    <div class="jobs-header">
+                        <h3>Print Job History</h3>
+                        <div class="jobs-stats">
+                            <span class="stat-item">Total Jobs: <strong id="total-jobs">50</strong></span>
+                            <span class="stat-item">Today: <strong id="today-jobs">12</strong></span>
+                            <span class="stat-item">This Week: <strong id="week-jobs">84</strong></span>
+                        </div>
+                    </div>
+                    
+                    <div class="jobs-filter">
+                        <select id="job-filter" onchange="filterJobs(this.value)">
+                            <option value="all">All Jobs</option>
+                            <option value="completed">Completed</option>
+                            <option value="printing">Printing</option>
+                            <option value="error">Error</option>
+                        </select>
+                        <button class="btn-secondary" onclick="refreshJobs()">🔄 Refresh</button>
+                        <button class="btn-secondary" onclick="clearJobHistory()">🗑️ Clear History</button>
+                    </div>
+                    
+                    <div class="jobs-table-container">
+                        <table class="jobs-table">
+                            <thead>
+                                <tr>
+                                    <th>Job ID</th>
+                                    <th>Document</th>
+                                    <th>User</th>
+                                    <th>Pages</th>
+                                    <th>Status</th>
+                                    <th>Time</th>
+                                    <th>Source</th>
+                                </tr>
+                            </thead>
+                            <tbody id="jobs-table-body">
+                                <!-- Jobs will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="jobs-pagination">
+                        <button class="btn-secondary" onclick="previousJobsPage()" id="prev-btn">← Previous</button>
+                        <span class="page-info">Page <span id="current-page">1</span> of <span id="total-pages">3</span></span>
+                        <button class="btn-secondary" onclick="nextJobsPage()" id="next-btn">Next →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Network Tab -->
+            <div id="network" class="tab-content">
+                <div class="network-section">
+                    <h3>Network Configuration</h3>
+                    <p class="warning">⚠️ Network credentials required for printer setup and maintenance</p>
+                    
+                    <form class="network-form" onsubmit="handleNetworkForm(event)">
+                        <div class="form-group">
+                            <label for="wifi-network">Wi-Fi Network:</label>
+                            <select id="wifi-network" required>
+                                <option value="">Select Network</option>
+                                <option value="CompanyWiFi">CompanyWiFi</option>
+                                <option value="Office_Main">Office_Main</option>
+                                <option value="Guest_Network">Guest_Network</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="wifi-password">Wi-Fi Password:</label>
+                            <input type="password" id="wifi-password" placeholder="Enter Wi-Fi password" required>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">Update Network Settings</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Security Tab -->
+            <div id="security" class="tab-content">
+                <div class="security-section">
+                    <h3>Security Settings</h3>
+                    <p class="info">Configure user access and authentication settings</p>
+                    
+                    <form class="security-form" onsubmit="handleSecurityForm(event)">
+                        <div class="form-group">
+                            <label for="admin-user">Administrator Username:</label>
+                            <input type="text" id="admin-user" placeholder="Enter admin username" required value="admin" disabled>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="admin-pass">Administrator Password:</label>
+                            <input type="password" id="admin-pass" placeholder="Enter admin password" required value="hplaserbarbhack" disabled>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="domain-user">Domain Username (for network printing):</label>
+                            <input type="text" id="domain-user" placeholder="domain\\username" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="domain-pass">Domain Password:</label>
+                            <input type="password" id="domain-pass" placeholder="Enter domain password" required>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">Apply Security Settings</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Support Tab -->
+            <div id="support" class="tab-content">
+                <div class="support-section">
+                    <h3>First Time Setup Support</h3>
+                    <p class="info">New employee? Get your printer access configured!</p>
+                    
+                    <form class="support-form" onsubmit="handleSupportForm(event)">
+                        <div class="form-group">
+                            <label for="employee-name">Full Name:</label>
+                            <input type="text" id="employee-name" placeholder="Enter your full name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="employee-id">Employee ID:</label>
+                            <input type="text" id="employee-id" placeholder="Enter your employee ID" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="department">Department:</label>
+                            <select id="department" required>
+                                <option value="">Select Department</option>
+                                <option value="IT">IT</option>
+                                <option value="HR">Human Resources</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Sales">Sales</option>
+                                <option value="Operations">Operations</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="login-username">Company Login Username:</label>
+                            <input type="text" id="login-username" placeholder="Your company username" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="login-password">Company Login Password:</label>
+                            <input type="password" id="login-password" placeholder="Your company password" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address:</label>
+                            <input type="email" id="email" placeholder="your.email@company.com" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Phone Extension:</label>
+                            <input type="text" id="phone" placeholder="Extension number">
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">Submit Setup Request</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 HP Inc. All rights reserved. | Firmware Version: 2.85.0</p>
+        </footer>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="modal">
+        <div class="modal-content">
+            <h3>✅ Success!</h3>
+            <p id="success-message">Settings updated successfully.</p>
+            <button onclick="closeModal()" class="btn-primary">OK</button>
+        </div>
+    </div>
+
+    <!-- Document Modal -->
+    <div id="document-modal" class="document-modal">
+        <div id="document-modal-content" class="document-modal-content">
+            <h3 id="modal-title">🚫 Access Denied</h3>
+            <p id="modal-message">This document cannot be viewed</p>
+            <div class="document-info">
+                <p><strong>Document:</strong> /scan/<span id="document-name"></span></p>
+                <p><strong>Reason:</strong> <span id="access-reason">Insufficient permissions or document is in use</span></p>
+                <p><strong>Contact:</strong> <span id="contact-info">IT Support for access requests</span></p>
+            </div>
+            <div id="modal-buttons">
+                <button id="download-btn" class="download-button" onclick="attemptDownload()" style="display: none;">Download</button>
+                <button onclick="closeDocumentModal()" class="btn-primary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

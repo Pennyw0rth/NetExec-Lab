@@ -1,0 +1,106 @@
+---
+config:
+  theme: redux
+  themeVariables:
+    primaryColor: '#fff'
+    edgeLabelBackground: '#fff'
+    tertiaryColor: '#fff'
+  look: handDrawn
+  layout: elk
+---
+flowchart TB
+ subgraph Pirates_Domain["🏴‍☠️ PIRATES.BRB"]
+        BLACKPEARL("🏛️ BLACKPEARL<br>(Domain Controller)")
+        JOLLYROGER("🚢 JOLLYROGER<br>(Web Server - Caddy 8080)")
+        QUEENREV("⚓ QUEENREV<br>(MSSQL Server)")
+        FLYINGDUTCHMAN("🦑 FLYINGDUTCHMAN<br>(NTDS Backup)")
+        
+        CaddyWeb("🖨️ Static Website<br>(Caddy - Port 8080)")
+        WebCreds("🔑 Web Credentials<br>(admin/hplaserbarbhack)")
+        ScanFolder("📁 /scan Folder<br>(Basic Auth Protected)")
+        ITDoc("📄 IT_Procedures.docx<br>(3 User Credentials)")
+        Barnacle("👤 User: barnacle<br>(First927&^!)")
+        Plankwalker("👤 User: plankwalker<br>(Entry284*@&)")
+        Morgan("👤 User: morgan<br>(Entry369@!*)")
+        Flint("👤 User: flint<br>(Flag in Description)")
+        
+        NTLMv1("🔓 NTLMv1 Relay<br>(JOLLYROGER$)")
+        RBCD("🎫 SPN-less RBCD<br>(Admin on JOLLYROGER)")
+        Pirate1("👤 Local: pirate1<br>(P@ssw0rd - DPAPI)")
+        Ironhook("👤 User: ironhook<br>(Flag5 - DPAPI Secret)")
+        
+        GMSA("⚙️ gMSA-shipping$<br>(Offline Recovery)")
+        MSSQL("🗄️ MSSQL Impersonation<br>(Flag6 in SECRET_GOLD)")
+        XPCmdShell("💻 XP_CMDSHELL<br>(QUEENREV$ TGT)")
+        S4U2Self("🎫 S4U2Self<br>(Admin on QUEENREV)")
+        
+        KCD("🔗 Constrained Delegation<br>(QUEENREV → FLYINGDUTCHMAN)")
+        NTDSBackup("📦 NTDS Backup<br>(Forensics)")
+        Blackbeard("👤 User: blackbeard<br>(Password in Description)")
+        Administrator("👤 Administrator<br>(REDqC8aQtyhd78A)")
+  end
+
+    CaddyWeb -- "1. Browse website<br>Find password in source" --> WebCreds
+    WebCreds -- "2. Access /scan folder<br>Basic Auth login" --> ScanFolder
+    ScanFolder -- "3. Download<br>IT_Procedures.docx" --> ITDoc
+    ITDoc -- "4. Contains 3 accounts" --> Plankwalker
+    ITDoc -- "4. Contains 3 accounts" --> Morgan
+    ITDoc -- "4. Contains 3 accounts" --> Barnacle
+    Barnacle -- "5. Credential Stuffing<br>Only barnacle is valid" --> BLACKPEARL
+    Barnacle -- "6. Enumerate users<br>Flag1 in description" --> Flint
+    Barnacle -- "7. SMB Share access<br>TREASOR_HUNT → Flag2" --> JOLLYROGER
+    Barnacle -- "8. GPP Password<br>Policy.xml → Flag3" --> BLACKPEARL
+    
+    Barnacle -- "9. Coerce JOLLYROGER<br>NTLMv1 Response" --> NTLMv1
+    NTLMv1 -- "10. Relay to LDAP<br>Set RBCD on JOLLYROGER$" --> RBCD
+    RBCD -- "11. S4U2Self + RBCD<br>Admin on JOLLYROGER → Flag4" --> JOLLYROGER
+    
+    JOLLYROGER -- "12. Dump SAM<br>Crack pirate1 password" --> Pirate1
+    Pirate1 -- "13. DPAPI Triage<br>Find ironhook creds → Flag5" --> Ironhook
+    
+    Ironhook -- "14. Access ISLAND2 share<br>Find GMSA blob" --> QUEENREV
+    QUEENREV -- "15. Parse GMSA offline<br>Get gMSA-shipping$ hash" --> GMSA
+    GMSA -- "16. MSSQL Connect<br>Impersonate SA" --> MSSQL
+    MSSQL -- "17. Read SECRET_GOLD.island<br>Flag6" --> QUEENREV
+    
+    GMSA -- "18. XP_CMDSHELL<br>Get QUEENREV$ TGT" --> XPCmdShell
+    XPCmdShell -- "19. S4U2Self<br>Admin on QUEENREV → Flag7" --> S4U2Self
+    
+    S4U2Self -- "20. KCD without PT<br>QUEENREV → FLYINGDUTCHMAN" --> KCD
+    KCD -- "21. Admin on FLYINGDUTCHMAN<br>Flag8" --> FLYINGDUTCHMAN
+    
+    FLYINGDUTCHMAN -- "22. Find NTDS Backup<br>Parse with ntdsdotsqlite" --> NTDSBackup
+    NTDSBackup -- "23. Find blackbeard<br>Password in description" --> Blackbeard
+    Blackbeard -- "24. Password Reuse<br>Administrator" --> Administrator
+    Administrator == "25. DCSync<br>krbtgt → Flag9" ==> BLACKPEARL
+
+     BLACKPEARL:::dc
+     JOLLYROGER:::server
+     QUEENREV:::server
+     FLYINGDUTCHMAN:::server
+     CaddyWeb:::webapp
+     WebCreds:::loot
+     ScanFolder:::webapp
+     ITDoc:::loot
+     Barnacle:::loot
+     Plankwalker:::loot
+     Morgan:::loot
+     Flint:::loot
+     NTLMv1:::technique
+     RBCD:::technique
+     Pirate1:::loot
+     Ironhook:::loot
+     GMSA:::loot
+     MSSQL:::technique
+     XPCmdShell:::technique
+     S4U2Self:::technique
+     KCD:::technique
+     NTDSBackup:::loot
+     Blackbeard:::loot
+     Administrator:::loot
+    classDef dc fill:#d1ccc0,stroke:#e74c3c,stroke-width:2px
+    classDef server fill:#ffcccc,stroke:#e74c3c,stroke-width:2px
+    classDef webapp fill:#a29bfe,stroke:#6c5ce7,stroke-width:2px
+    classDef loot fill:#f9ca24,stroke:#f1c40f,stroke-width:2px,stroke-dasharray: 5 5
+    classDef technique fill:#74b9ff,stroke:#0984e3,stroke-width:2px
+    linkStyle 25 stroke:#D50000,fill:none,stroke-width:4px

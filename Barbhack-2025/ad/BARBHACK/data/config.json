@@ -1,0 +1,675 @@
+{
+    "lab": {
+        "hosts": {
+            "dc01": {
+                "hostname": "BLACKPEARL",
+                "type": "dc",
+                "local_admin_password": "REDqC8aQtyhd78A",
+                "domain": "PIRATES.BRB",
+                "path": "DC=PIRATES,DC=BRB",
+                "local_groups": {
+                    "Administrators": []
+                },
+                "scripts": ["users.ps1", "description.ps1", "reset-admin-pass.ps1", "delegation.ps1", "maq.ps1"],
+                "vulns": [
+                    "disable_firewall",
+                    "directory",
+                    "files"
+                ],
+                "vulns_vars": {
+                    "directory": {},
+                    "files": {
+                        "gpp_policy": {
+                            "src": "dc01/Policy.xml",
+                            "dest": "\\\\pirates.brb\\SYSVOL\\PIRATES.BRB\\Policies\\{31B2F340-016D-11D2-945F-00C04FB984F9}\\USER\\Groups.xml"
+                        }
+                    }
+                }
+            },
+            "srv01": {
+                "hostname": "JOLLYROGER",
+                "type": "server",
+                "local_admin_password": "JR@Server2025!",
+                "domain": "PIRATES.BRB",
+                "path": "DC=PIRATES,DC=BRB",
+                "use_laps": false,
+                "local_groups": {
+                    "Administrators": []
+                },
+                "scripts": [
+                    "caddy.ps1",
+                    "local_users.ps1",
+                    "ntlmv1.ps1",
+                    "dpapi_secret.ps1"
+                ],
+                "vulns": [
+                    "disable_firewall",
+                    "directory",
+                    "files",
+                    "shares",
+                    "permissions",
+                    "openshares"
+                ],
+                "vulns_vars": {
+                    "directory": {
+                        "Caddy": "C:\\Caddy",
+                        "Websites": "C:\\Websites\\mywebsite",
+                        "scan": "C:\\Websites\\mywebsite\\scan",
+                        "TREASOR_HUNT": "C:\\TREASOR_HUNT",
+                        "Flag": "C:\\Flag"
+                    },
+                    "files": {
+                        "flag4": {
+                            "src": "srv01/flag.txt",
+                            "dest": "C:\\Flag\\flag.txt"
+                        }
+                    },
+                    "shares": {
+                        "TREASOR_HUNT": {
+                            "path": "C:\\TREASOR_HUNT",
+                            "list": "yes",
+                            "full": "PIRATES\\barnacle",
+                            "change": "PIRATES\\barnacle",
+                            "read": "PIRATES\\barnacle"
+                        }
+                    },
+                    "permissions": {
+                        "TREASOR_HUNT": {
+                            "path": "C:\\TREASOR_HUNT",
+                            "user": "PIRATES\\barnacle",
+                            "rights": "FullControl,Read,Write"
+                        }
+                    }
+                }
+            },
+            "srv02": {
+                "hostname": "QUEENREV",
+                "type": "server",
+                "local_admin_password": "QR@Server2025!",
+                "domain": "PIRATES.BRB",
+                "path": "DC=PIRATES,DC=BRB",
+                "use_laps": false,
+                "local_groups": {
+                    "Administrators": []
+                },
+                "scripts": [
+                    "disable_ntlm.ps1"
+                ],
+                "mssql": {
+                    "sa_password": "MSSQL@dmin2025!",
+                    "svcaccount": "sql_svc",
+                    "sysadmins": [],
+                    "executeaslogin": {
+                        "PIRATES\\gMSA-shipping$": "sa"
+                    },
+                    "executeasuser": {}
+                },
+                "vulns": [
+                    "disable_firewall",
+                    "directory",
+                    "files",
+                    "shares",
+                    "permissions"
+                ],
+                "vulns_vars": {
+                    "directory": {
+                        "Flag": "C:\\Flag"
+                    },
+                    "files": {
+                        "flag7": {
+                            "src": "srv02/flag.txt",
+                            "dest": "C:\\Flag\\flag.txt.txt"
+                        }
+                    },
+                    "shares": {
+                        "ISLAND2": {
+                            "path": "C:\\ISLAND2",
+                            "list": "yes",
+                            "full": "PIRATES\\ironhook",
+                            "change": "PIRATES\\ironhook",
+                            "read": "PIRATES\\ironhook"
+                        }
+                    },
+                    "permissions": {
+                        "ISLAND2": {
+                            "path": "C:\\ISLAND2",
+                            "user": "PIRATES\\ironhook",
+                            "rights": "FullControl,Read,Write"
+                        }
+                    }
+                }
+            },
+            "srv03": {
+                "hostname": "FLYINGDUTCHMAN",
+                "type": "server",
+                "local_admin_password": "FD@Server2025!",
+                "domain": "PIRATES.BRB",
+                "path": "DC=PIRATES,DC=BRB",
+                "use_laps": false,
+                "local_groups": {
+                    "Administrators": []
+                },
+                "scripts": [
+                    "disable_ntlm.ps1",
+                    "ntds_backup.ps1"
+                ],
+                "vulns": [
+                    "disable_firewall",
+                    "directory",
+                    "files"
+                ],
+                "vulns_vars": {
+                    "directory": {
+                        "Flag": "C:\\Flag",
+                        "BACKUP": "C:\\BACKUP"
+                    },
+                    "files": {
+                        "flag8": {
+                            "src": "srv03/flag.txt",
+                            "dest": "C:\\Flag\\flag.txt.txt"
+                        }
+                    }
+                }
+            }
+        },
+        "domains": {
+            "PIRATES.BRB": {
+                "dc": "dc01",
+                "domain_password": "REDqC8aQtyhd78A",
+                "netbios_name": "PIRATES",
+                "organisation_units": {
+                    "PirateCrew": {
+                        "name": "PirateCrew",
+                        "path": "DC=PIRATES,DC=BRB"
+                    }
+                },
+                "groups": {
+                    "PirateCrew": {
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    }
+                },
+                "gmsa": {
+                    "gmsa_account": {
+                        "gMSA_Name": "gMSA-shipping",
+                        "gMSA_FQDN": "gMSA-shipping.pirates.brb",
+                        "gMSA_SPNs": [],
+                        "gMSA_HostNames": ["BLACKPEARL"],
+                        "gMSA_Principals": ["Administrator"]
+                    }
+                },
+                "acls": {},
+                "users": {
+                    "plankwalker": {
+                        "firstname": "Plank",
+                        "surname": "Walker",
+                        "password": "Entry284*@&",
+                        "city": "Tortuga",
+                        "description": "Walks the plank",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "barnacle": {
+                        "firstname": "Barnacle",
+                        "surname": "Bill",
+                        "password": "First927&^!",
+                        "city": "Tortuga",
+                        "description": "Crusty old sailor",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "morgan": {
+                        "firstname": "Captain",
+                        "surname": "Morgan",
+                        "password": "Entry369@!*",
+                        "city": "Jamaica",
+                        "description": "Rum lover",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "ironhook": {
+                        "firstname": "Iron",
+                        "surname": "Hook",
+                        "password": "brb{5d26ec0024167fdf8a45a70eff4ade36}",
+                        "city": "Neverland",
+                        "description": "Lost his hand to a crocodile",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "flint": {
+                        "firstname": "Captain",
+                        "surname": "Flint",
+                        "password": "Fl1nt$Tr34sur3!2025",
+                        "city": "Skeleton Island",
+                        "description": "brb{88e7af3d7bf9ab21f9d6faa5cf644b76}",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "blackbeard": {
+                        "firstname": "Edward",
+                        "surname": "Teach",
+                        "password": "Bl4ckb34rd!P1r4t3",
+                        "city": "Nassau",
+                        "description": "The most feared pirate",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "jack": {
+                        "firstname": "Jack",
+                        "surname": "Sparrow",
+                        "password": "Wh3r3sMyRum?!2025",
+                        "city": "Caribbean",
+                        "description": "Captain Jack Sparrow!",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "anne": {
+                        "firstname": "Anne",
+                        "surname": "Bonny",
+                        "password": "F13rc3F3m4l3!2025",
+                        "city": "Ireland",
+                        "description": "Female pirate legend",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "calico": {
+                        "firstname": "Calico",
+                        "surname": "Jack",
+                        "password": "C4l1c0J4ck!Pr1v4t33r",
+                        "city": "Bahamas",
+                        "description": "Known for his calico clothes",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "charles": {
+                        "firstname": "Charles",
+                        "surname": "Vane",
+                        "password": "V4n3!Th3Cr4zy",
+                        "city": "Nassau",
+                        "description": "Ruthless pirate captain",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "mary": {
+                        "firstname": "Mary",
+                        "surname": "Read",
+                        "password": "M4ryR34d!D1sgu1s3d",
+                        "city": "England",
+                        "description": "Disguised as a man",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "sam": {
+                        "firstname": "Black",
+                        "surname": "Sam",
+                        "password": "B3ll4my!R0b1nH00d",
+                        "city": "Cape Cod",
+                        "description": "Prince of Pirates",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "william": {
+                        "firstname": "William",
+                        "surname": "Kidd",
+                        "password": "K1ddN@tur3!Pr1v4t33r",
+                        "city": "Scotland",
+                        "description": "Privateer turned pirate",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "edward": {
+                        "firstname": "Edward",
+                        "surname": "Low",
+                        "password": "L0wL1f3!Brut4l",
+                        "city": "Westminster",
+                        "description": "Notorious for cruelty",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "stede": {
+                        "firstname": "Stede",
+                        "surname": "Bonnet",
+                        "password": "G3ntl3m4n!P1r4t3",
+                        "city": "Barbados",
+                        "description": "The Gentleman Pirate",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "henry": {
+                        "firstname": "Henry",
+                        "surname": "Morgan",
+                        "password": "Pr1v4t33r!K1ng",
+                        "city": "Wales",
+                        "description": "Admiral of the Brethren",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "bartholomew": {
+                        "firstname": "Bartholomew",
+                        "surname": "Roberts",
+                        "password": "Bl4ckB4rt!400Sh1ps",
+                        "city": "Wales",
+                        "description": "Captured 400 ships",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "thomas": {
+                        "firstname": "Thomas",
+                        "surname": "Tew",
+                        "password": "R3dS34!R0v3r",
+                        "city": "Rhode Island",
+                        "description": "Red Sea Rover",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "roberts": {
+                        "firstname": "Black",
+                        "surname": "Bart",
+                        "password": "B4rtR0b3rts!L3g3nd",
+                        "city": "Caribbean",
+                        "description": "Most successful pirate",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "francis": {
+                        "firstname": "Francis",
+                        "surname": "Drake",
+                        "password": "Dr4k3!Qu33nsH3r0",
+                        "city": "Devon",
+                        "description": "Sea Dog of the Queen",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "jean": {
+                        "firstname": "Jean",
+                        "surname": "Lafitte",
+                        "password": "L4f1tt3!Sm uggl3r",
+                        "city": "France",
+                        "description": "Pirate of the Gulf",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "olivier": {
+                        "firstname": "Olivier",
+                        "surname": "Levasseur",
+                        "password": "L4Buz3!Tr34sur3",
+                        "city": "Calais",
+                        "description": "The Buzzard",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "charlotte": {
+                        "firstname": "Charlotte",
+                        "surname": "Badger",
+                        "password": "B4dg3r!F1rstF3m4l3",
+                        "city": "England",
+                        "description": "First female Australian pirate",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "richard": {
+                        "firstname": "Richard",
+                        "surname": "Worley",
+                        "password": "W0rl3y!Sh0rtC4r33r",
+                        "city": "New York",
+                        "description": "Short but fierce career",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "isabella": {
+                        "firstname": "Isabella",
+                        "surname": "Donahue",
+                        "password": "D0n4hu3!Myst3r10us",
+                        "city": "Caribbean",
+                        "description": "Mysterious female pirate",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "lucas": {
+                        "firstname": "Lucas",
+                        "surname": "Velasquez",
+                        "password": "V3l4squ3z!Sp4n1sh",
+                        "city": "Spain",
+                        "description": "Spanish privateer",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "amelia": {
+                        "firstname": "Amelia",
+                        "surname": "Strong",
+                        "password": "Str0ng!W0m4nPr1v4t33r",
+                        "city": "England",
+                        "description": "Strong-willed pirate",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "elizabeth": {
+                        "firstname": "Elizabeth",
+                        "surname": "Swann",
+                        "password": "Sw4nn!P1r4t3K1ng",
+                        "city": "Port Royal",
+                        "description": "Pirate King",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "george": {
+                        "firstname": "George",
+                        "surname": "Booth",
+                        "password": "B00th!M4d4g4sc4r",
+                        "city": "England",
+                        "description": "Madagascar pirate",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "seafox": {
+                        "firstname": "Sea",
+                        "surname": "Fox",
+                        "password": "S34F0x!Cunn1ng",
+                        "city": "Caribbean",
+                        "description": "Cunning like a fox",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "corsair": {
+                        "firstname": "The",
+                        "surname": "Corsair",
+                        "password": "C0rs41r!B4rb4ry",
+                        "city": "Algiers",
+                        "description": "Barbary coast raider",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "madeye": {
+                        "firstname": "Mad",
+                        "surname": "Eye",
+                        "password": "M4dEy3!S33s4ll",
+                        "city": "Unknown",
+                        "description": "Sees all with one eye",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "sharktooth": {
+                        "firstname": "Shark",
+                        "surname": "Tooth",
+                        "password": "Sh4rkT00th!B1t3r",
+                        "city": "Pacific",
+                        "description": "Filed teeth like a shark",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "sable": {
+                        "firstname": "Sable",
+                        "surname": "Shadow",
+                        "password": "S4bl3!D4rkSh4d0w",
+                        "city": "Caribbean",
+                        "description": "Strikes from the shadows",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "stormy": {
+                        "firstname": "Stormy",
+                        "surname": "Seas",
+                        "password": "St0rmy!T3mp3st",
+                        "city": "Atlantic",
+                        "description": "Master of storms",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "ghost": {
+                        "firstname": "Ghost",
+                        "surname": "Ship",
+                        "password": "Gh0st!Ph4nt0m",
+                        "city": "Unknown",
+                        "description": "Appears from nowhere",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "reef": {
+                        "firstname": "Reef",
+                        "surname": "Runner",
+                        "password": "R33f!C0r4lK1ng",
+                        "city": "Pacific",
+                        "description": "Knows every reef",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "brine": {
+                        "firstname": "Brine",
+                        "surname": "Beard",
+                        "password": "Br1n3!S4ltyD0g",
+                        "city": "Atlantic",
+                        "description": "Saltiest of pirates",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "blacktail": {
+                        "firstname": "Black",
+                        "surname": "Tail",
+                        "password": "Bl4ckT41l!D4rkS34",
+                        "city": "Caribbean",
+                        "description": "Leaves only darkness",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "redbeard": {
+                        "firstname": "Red",
+                        "surname": "Beard",
+                        "password": "R3dB34rd!Fl4m3",
+                        "city": "Mediterranean",
+                        "description": "Flame-colored beard",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "saltydog": {
+                        "firstname": "Salty",
+                        "surname": "Dog",
+                        "password": "S4ltyD0g!0ldS34m4n",
+                        "city": "Atlantic",
+                        "description": "Old seaman",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "pegasus": {
+                        "firstname": "Pegasus",
+                        "surname": "Pete",
+                        "password": "P3g4sus!Fly1ngH0rs3",
+                        "city": "Greece",
+                        "description": "Fast as a flying horse",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "rumcutter": {
+                        "firstname": "Rum",
+                        "surname": "Cutter",
+                        "password": "RumCutt3r!B00z3",
+                        "city": "Jamaica",
+                        "description": "Always has rum",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "stormbreaker": {
+                        "firstname": "Storm",
+                        "surname": "Breaker",
+                        "password": "St0rmBr34k3r!Thund3r",
+                        "city": "Caribbean",
+                        "description": "Breaks through any storm",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "seadog": {
+                        "firstname": "Sea",
+                        "surname": "Dog",
+                        "password": "S34D0g!W4v3R1d3r",
+                        "city": "Pacific",
+                        "description": "Rides the waves",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "reefwalker": {
+                        "firstname": "Reef",
+                        "surname": "Walker",
+                        "password": "R33fW4lk3r!C0r4l",
+                        "city": "Caribbean",
+                        "description": "Walks on coral reefs",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "crowsnest": {
+                        "firstname": "Crows",
+                        "surname": "Nest",
+                        "password": "Cr0wsN3st!W4tch3r",
+                        "city": "Atlantic",
+                        "description": "Always watching",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "stormcloud": {
+                        "firstname": "Storm",
+                        "surname": "Cloud",
+                        "password": "St0rmCl0ud!D4rkSky",
+                        "city": "Caribbean",
+                        "description": "Brings dark skies",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "harpoon": {
+                        "firstname": "Harpoon",
+                        "surname": "Harry",
+                        "password": "H4rp00n!Wh4l3Hunt3r",
+                        "city": "New Bedford",
+                        "description": "Expert harpooner",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "cutthroat": {
+                        "firstname": "Cutthroat",
+                        "surname": "Carl",
+                        "password": "Cutthro4t!Brut4l",
+                        "city": "Caribbean",
+                        "description": "Merciless pirate",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB"
+                    },
+                    "lagooner": {
+                        "firstname": "Lagoon",
+                        "surname": "Larry",
+                        "password": "L4g00n3r!H1dd3n",
+                        "city": "Pacific",
+                        "description": "Hides in lagoons",
+                        "groups": [],
+                        "path": "OU=PirateCrew,DC=PIRATES,DC=BRB",
+                        "disabled": true
+                    },
+                    "sql_svc": {
+                        "firstname": "SQL",
+                        "surname": "Service",
+                        "password": "MSSQLadmin2025Pirates",
+                        "city": "-",
+                        "description": "MSSQL Service Account",
+                        "groups": [],
+                        "path": "CN=Users,DC=PIRATES,DC=BRB"
+                    }
+                }
+            }
+        }
+    }
+}
