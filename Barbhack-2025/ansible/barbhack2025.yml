@@ -110,13 +110,32 @@
         path: C:\Flag
         state: directory
 
-    - name: Generate shipping.txt with gMSA blob from DC
+- name: Generate gMSA blob on DC
+  hosts: dc01
+  gather_facts: no
+  tasks:
+    - name: Generate shipping.txt content on DC
       ansible.windows.win_shell: |
         $header = "Just found this on the back of the ship, is this sensitive information ?`r`n`r`n"
-        $gmsa = Get-ADServiceAccount -Identity "gMSA-shipping" -Properties *,msDS-ManagedPassword -Server blackpearl.pirates.brb
+        $gmsa = Get-ADServiceAccount -Identity "gMSA-shipping" -Properties *,msDS-ManagedPassword
         $gmsaOutput = $gmsa | Out-String
         $content = $header + $gmsaOutput
-        Set-Content -Path "C:\ISLAND2\shipping.txt" -Value $content
+        Set-Content -Path "C:\shipping.txt" -Value $content
+
+    - name: Fetch shipping.txt from DC
+      fetch:
+        src: C:\shipping.txt
+        dest: /tmp/shipping.txt
+        flat: yes
+
+- name: Copy gMSA blob to QUEENREV
+  hosts: srv02
+  gather_facts: no
+  tasks:
+    - name: Copy shipping.txt to ISLAND2 share
+      win_copy:
+        src: /tmp/shipping.txt
+        dest: C:\ISLAND2\shipping.txt
 
     - name: Copy flag to QUEENREV
       win_copy:
