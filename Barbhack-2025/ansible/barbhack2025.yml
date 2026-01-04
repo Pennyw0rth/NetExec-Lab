@@ -127,9 +127,11 @@
     - name: Generate shipping.txt content on DC (as Administrator)
       ansible.windows.win_shell: |
         $header = "Just found this on the back of the ship, is this sensitive information ?`r`n`r`n"
-        $gmsa = Get-ADServiceAccount -Identity "gMSA-shipping" -Properties *,msDS-ManagedPassword
-        $gmsaOutput = $gmsa | Out-String
-        $content = $header + $gmsaOutput
+        $gmsa = Get-ADServiceAccount -Identity "gMSA-shipping" -Properties msDS-ManagedPassword
+        $blob = $gmsa.'msDS-ManagedPassword'
+        $blobString = $blob -join ','
+        $content = $header + "Account: gMSA-shipping`$`r`n"
+        $content += "msDS-ManagedPassword:`r`n" + $blobString
         Set-Content -Path "C:\shipping.txt" -Value $content
       become: yes
       become_method: runas
