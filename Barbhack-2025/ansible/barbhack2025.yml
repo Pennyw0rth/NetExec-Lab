@@ -2,6 +2,16 @@
 # Barbhack 2025 specific configuration playbook
 # This handles all the special setup for the Pirates lab
 
+- name: Configure gMSA permissions on DC
+  hosts: dc01
+  gather_facts: no
+  tasks:
+    - name: Allow Administrator to retrieve gMSA-shipping password
+      ansible.windows.win_shell: |
+        Import-Module ActiveDirectory
+        Set-ADServiceAccount -Identity "gMSA-shipping" -PrincipalsAllowedToRetrieveManagedPassword "Administrator", "BLACKPEARL$"
+      ignore_errors: yes
+
 - name: Configure JOLLYROGER (Web Server with NTLMv1)
   hosts: srv01
   gather_facts: no
