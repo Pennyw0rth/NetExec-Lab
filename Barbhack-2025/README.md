@@ -66,6 +66,6 @@ Ahoy, matey! Time to conquer the Seven Seas and claim the PIRATES.BRB domain!
 ## Special Thanks to
 
 - M4yFly [@M4yFly](https://x.com/M4yFly) for the amazing GOAD project and ansible playbooks (This repo is based on the work of [Mayfly277](https://github.com/Orange-Cyberdefense/GOAD/))
-- mpgn [@mpgn_x64](https://x.com/mpgn_x64) for the Barbhack Windows CTF
+- mpgn [@mpgn_x64](https://x.com/mpgn_x64) for the Barbhack Windows CTF and mael91620 [@mael91620](https://github.com/mael91620) for the great ideas !
 - mael91620 [@mael91620](https://github.com/mael91620) for the detailed writeup
 - NetExec's dev team for this awesome tool!
