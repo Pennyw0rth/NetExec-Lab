@@ -216,11 +216,11 @@
         data: 2
         type: dword
 
-    - name: Set LmCompatibilityLevel to 5 on BLACKPEARL
+    - name: Set LmCompatibilityLevel to 2 on BLACKPEARL (accept NTLMv1 for relay)
       win_regedit:
         path: HKLM:\SYSTEM\CurrentControlSet\Control\Lsa
         name: LmCompatibilityLevel
-        data: 5
+        data: 2
         type: dword
 
     - name: Set Machine Account Quota to 0
