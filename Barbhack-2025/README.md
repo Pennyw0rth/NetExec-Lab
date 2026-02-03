@@ -40,6 +40,7 @@ Obviously do not cheat by looking at the passwords and flags in the recipe files
 ### Public Writeups
 
 - [Barbhack 2025 AD Writeup](https://github.com/mael91620/Barbhack-2025-AD-writeup) by [@mael91620](https://github.com/mael91620)
+- [Barbhack 2025 AD Writeup](https://0xdf.gitlab.io/2026/01/29/barbhack-2025-ctf.html) by [@0xdf_](https://x.com/0xdf_)
 
 There are 9 flags to find in this lab!
 
