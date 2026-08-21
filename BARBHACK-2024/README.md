@@ -18,6 +18,7 @@ Obviously do not cheat by looking at the passwords and flags in the recipe files
 
 - [BarbHack CTF 2024 : Gotham City - Active Directory writeup](https://www.acceis.fr/write-up-barbhack-challenge-active-directory/) by [KlemouLeZoZo](https://kleman.pw/seigneur.html)
 - [BarbHack CTF 2024 : Gotham City - Active Directory writeup](https://0xpix3l.github.io/CTFs/GothamCity/) by [0xPix3l](https://x.com/zzziadmo)
+- [BarbHack CTF 2024 : Gotham City - Active Directory writeup](https://secretmyth.blog/netexec/nxc-barbhack24-gotham/) by [SecretMyth](https://x.com/thesecretmyth)
 
 There is 13 flags to find in this lab !
 
@@ -37,13 +38,13 @@ Time compromise Gotham City !
   - [Install with Ludus](./docs/install_with_ludus.md)
 
 - Installation is in three parts :
-  1. Templating : this will create the template to use (needed only for proxmox) 
+  1. Templating : this will create the template to use (needed only for proxmox)
   2. Providing : this will instantiate the virtual machines depending on your provider
   3. Provisioning : it is always made with ansible, it will install all the stuff to create the lab
 
 ## Special Thanks to
 
-- Aleem Ladha [@LadhaAleem](https://x.com/LadhaAleem) for creating this project and converting the Barbhack-2024 workshop to an ansible playbook  
+- Aleem Ladha [@LadhaAleem](https://x.com/LadhaAleem) for creating this project and converting the Barbhack-2024 workshop to an ansible playbook
 - M4yFly [@M4yFly](https://x.com/M4yFly) for the amazing GOAD porject and ansible playbooks (This repo is based on the work of [Mayfly277](https://github.com/Orange-Cyberdefense/GOAD/))
 - mpgn [@mpgn_x64](https://x.com/mpgn_x64) for the Barbhack Windows CTF
 - NetExec's dev team for this awesome tool !
