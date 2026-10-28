@@ -41,6 +41,7 @@ Obviously do not cheat by looking at the passwords and flags in the recipe files
 
 - [Barbhack 2025 AD Writeup](https://github.com/mael91620/Barbhack-2025-AD-writeup) by [@mael91620](https://github.com/mael91620)
 - [Barbhack 2025 AD Writeup](https://0xdf.gitlab.io/2026/01/29/barbhack-2025-ctf.html) by [@0xdf_](https://x.com/0xdf_)
+- [Barbhack 2025 AD Writeup](https://secretmyth.blog/active-directory/dead-men-tell-no-spns/) by [thesecretmyth](https://x.com/thesecretmyth)
 
 There are 9 flags to find in this lab!
 
@@ -60,7 +61,7 @@ Ahoy, matey! Time to conquer the Seven Seas and claim the PIRATES.BRB domain!
   - [Install with Ludus](./docs/install_with_ludus.md)
 
 - Installation is in three parts:
-  1. Templating: this will create the template to use (needed only for proxmox) 
+  1. Templating: this will create the template to use (needed only for proxmox)
   2. Providing: this will instantiate the virtual machines depending on your provider
   3. Provisioning: it is always made with ansible, it will install all the stuff to create the lab
 
